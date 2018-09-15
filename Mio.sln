@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2019
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AC7D9F42-EF8A-43E5-9713-03055857063D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6645CEF3-4418-4006-9CE4-E0D7D28F0F27}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mio", "src\Mio\Mio.csproj", "{059D29A4-83A1-41B5-A341-03DCC6D1184C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mio.Tests", "test\Mio.Tests\Mio.Tests.csproj", "{1D653825-77AA-4175-A5C8-B3FE7A0F2685}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Description = Mio I/O Library <https://github.com/takeshik/Mio>: Copyright © Takeshi KIRIYA (aka takeshik) <takeshik@tksk.io>, All rights reserved. Licensed under the MIT License.
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{059D29A4-83A1-41B5-A341-03DCC6D1184C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{059D29A4-83A1-41B5-A341-03DCC6D1184C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{059D29A4-83A1-41B5-A341-03DCC6D1184C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{059D29A4-83A1-41B5-A341-03DCC6D1184C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D653825-77AA-4175-A5C8-B3FE7A0F2685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D653825-77AA-4175-A5C8-B3FE7A0F2685}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D653825-77AA-4175-A5C8-B3FE7A0F2685}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D653825-77AA-4175-A5C8-B3FE7A0F2685}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{059D29A4-83A1-41B5-A341-03DCC6D1184C} = {AC7D9F42-EF8A-43E5-9713-03055857063D}
+		{1D653825-77AA-4175-A5C8-B3FE7A0F2685} = {6645CEF3-4418-4006-9CE4-E0D7D28F0F27}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C47FFF1B-F277-49B3-BCC3-FE667705CA5F}
+	EndGlobalSection
+EndGlobal
