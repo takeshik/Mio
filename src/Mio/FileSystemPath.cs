@@ -34,7 +34,7 @@ namespace Mio
             => this.ExtensionEquals(extension, DefaultComparer);
 
         public bool ExtensionEquals([CanBeNull] string extension, [NotNull] Comparer comparer)
-            => comparer.Equals(this.Extension.TrimStart('.'), extension.TrimStart('.'));
+            => comparer.Equals(this.Extension.TrimStart('.'), extension?.TrimStart('.'));
 
         public bool IsDescendantOf([NotNull] DirectoryPath directory)
             => this.IsDescendantOf(directory, DefaultComparer);
