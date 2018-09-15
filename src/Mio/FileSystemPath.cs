@@ -65,7 +65,7 @@ namespace Mio
         public DirectoryPath Root
             => new DirectoryPath(Path.GetPathRoot(this.FullName));
 
-        protected FileSystemPath(string path, bool normalize)
+        private protected FileSystemPath(string path, bool normalize)
         {
             if (string.IsNullOrEmpty(path)) throw new ArgumentException("Invalid path.", nameof(path));
 
