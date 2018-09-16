@@ -32,3 +32,7 @@ internal static class ThisAssembly
     <InformationalVersion>$infoVersion</InformationalVersion>
   </PropertyGroup>
 </Project>" > $PSScriptRoot/../build/VersionInfo.Generated.props
+
+Write-Host "PackageVersion: $pkgVersion"
+Write-Host "AssemblyVersion: $asmVersion"
+Write-Host "FileVersion: $fileVersion"
