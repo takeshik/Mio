@@ -48,7 +48,7 @@ namespace Mio.Destructive
 
         public bool Delete()
         {
-            if (this.Exists()) return false;
+            if (!this.Exists()) return false;
 
             D.Delete(this.FullName);
             return true;
@@ -77,7 +77,7 @@ namespace Mio.Destructive
 
         public bool DeleteAll()
         {
-            if (this.Exists()) return false;
+            if (!this.Exists()) return false;
 
             D.Delete(this.FullName, true);
             return true;
