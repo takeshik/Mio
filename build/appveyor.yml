@@ -4,8 +4,8 @@ configuration: Release
 clone_depth: 1
 clone_folder: C:\build
 environment:
-  package_version: 1.0.1
-  assembly_version: 1.0.1
+  package_version: 1.0.2
+  assembly_version: 1.0.2
 nuget:
   disable_publish_on_pr: true
 before_build:
