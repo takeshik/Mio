@@ -26,7 +26,7 @@ namespace Mio.Destructive
 
         [Pure]
         public override string ToString()
-            => "<DestructiveDir: " + this.FullName + ">";
+            => "<DestructiveFile: " + this.FullName + ">";
 
         [NotNull]
         public static DestructiveFilePath CreateTempFile()
@@ -52,7 +52,7 @@ namespace Mio.Destructive
 
         public bool Delete()
         {
-            if (!F.Exists(this.FullName)) return false;
+            if (F.Exists(this.FullName)) return false;
             try
             {
                 F.Delete(this.FullName);
