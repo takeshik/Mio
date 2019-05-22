@@ -33,6 +33,17 @@ namespace Mio.Destructive
         public override string ToString()
             => "<DestructiveDir: " + this.FullName + ">";
 
+        [NotNull]
+        public new DestructiveDirectoryPath EnsureCreated()
+        {
+            D.CreateDirectory(this.FullName);
+            return this;
+        }
+
+        [CanBeNull]
+        public new DestructiveDirectoryPath NullIfNotExists()
+            => this.Exists() ? this : null;
+
         public void SetAttributes(FileAttributes attributes)
             => File.SetAttributes(this.FullName, attributes);
 

@@ -36,6 +36,9 @@ namespace Mio.Destructive
         [NotNull]
         public static DestructiveFilePath CreateTempFile()
             => new DestructiveFilePath(Path.GetTempFileName());
+        [CanBeNull]
+        public new DestructiveFilePath NullIfNotExists()
+            => this.Exists() ? this : null;
 
         public void SetAttributes(FileAttributes attributes)
             => F.SetAttributes(this.FullName, attributes);
