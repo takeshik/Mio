@@ -4,12 +4,15 @@
  * All rights reserved. Licensed under the MIT License.
  */
 
+using System;
 using JetBrains.Annotations;
 
 namespace Mio
 {
     partial class FileSystemPath
     {
+        private static readonly Type _hyperlinqType = Type.GetType("LINQPad.Hyperlinq, LINQPad");
+
         [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
         private sealed class DumpProxy
         {
@@ -22,17 +25,13 @@ namespace Mio
 
             public override string ToString()
                 => this._path.FullName;
-
-            public string Name
-                => this._path.Name;
-
-            public object Parent
-                => (object)this._path.TryGetParent() ?? "";
         }
 
         [UsedImplicitly]
         [NotNull]
         private protected object ToDump()
-            => new DumpProxy(this);
+            => _hyperlinqType == null
+                ? new DumpProxy(this)
+                : Activator.CreateInstance(_hyperlinqType, this.FullName, this.ToString());
     }
 }
