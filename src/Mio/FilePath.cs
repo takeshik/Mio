@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Mio.Destructive;
 using F = System.IO.File;
@@ -102,6 +104,72 @@ namespace Mio
         [ItemNotNull]
         public IEnumerable<string> ReadLines(Encoding encoding = null)
             => F.ReadLines(this.FullName, encoding ?? Encoding.GetValueFor(this));
+
+        [NotNull]
+        [ItemNotNull]
+        public Task<byte[]> ReadAllBytesAsync(CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return Task.FromCanceled<byte[]>(cancellationToken);
+            }
+
+            async Task<byte[]> Core()
+            {
+                using (var fs = this.OpenRead())
+                {
+                    var buf = new byte[fs.Length];
+                    await fs.ReadAsync(buf, 0, buf.Length, cancellationToken).ConfigureAwait(false);
+                    return buf;
+                }
+            }
+
+            return Core();
+        }
+
+        [NotNull]
+        [ItemNotNull]
+        public Task<string[]> ReadAllLinesAsync(Encoding encoding = null, CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return Task.FromCanceled<string[]>(cancellationToken);
+            }
+
+            async Task<string[]> Core()
+            {
+                var lines = new List<string>();
+                using (var sr = this.OpenReadText(encoding))
+                {
+                    string str;
+                    while ((str = await sr.ReadLineAsync().ConfigureAwait(false)) != null)
+                    {
+                        lines.Add(str);
+                        cancellationToken.ThrowIfCancellationRequested();
+                    }
+                }
+
+                return lines.ToArray();
+            }
+
+            return Core();
+        }
+
+        [NotNull]
+        [ItemNotNull]
+        public Task<string> ReadAllTextAsync(Encoding encoding = null, CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return Task.FromCanceled<string>(cancellationToken);
+            }
+
+            using (var sr = this.OpenReadText(encoding))
+            using (cancellationToken.Register(x => ((StreamReader)x).Dispose(), sr, false))
+            {
+                return sr.ReadToEndAsync();
+            }
+        }
 
         [NotNull]
         public FileStream OpenRead(

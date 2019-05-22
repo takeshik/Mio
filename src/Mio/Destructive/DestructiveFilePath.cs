@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using F = System.IO.File;
 
@@ -106,6 +108,154 @@ namespace Mio.Destructive
 
         public void Write([NotNull] string contents, Encoding encoding = null)
             => F.WriteAllText(this.FullName, contents, encoding ?? Encoding.GetValueFor(this));
+
+        [NotNull]
+        public Task AppendAsync([NotNull] byte[] bytes,
+            CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return Task.FromCanceled(cancellationToken);
+            }
+
+            async Task Core()
+            {
+                using (var fs = this.Open(FileMode.Append, FileAccess.Write))
+                {
+                    await fs.WriteAsync(bytes, 0, bytes.Length, cancellationToken);
+                    await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
+                }
+            }
+
+            return Core();
+        }
+
+        [NotNull]
+        public Task AppendAsync([NotNull] IEnumerable<string> contents,
+            Encoding encoding = null,
+            CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return Task.FromCanceled(cancellationToken);
+            }
+
+            async Task Core()
+            {
+                using (var fs = this.Open(FileMode.Append, FileAccess.Write))
+                using (var sw = new StreamWriter(fs, encoding ?? Encoding.GetValueFor(this)))
+                {
+                    foreach (var content in contents)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        await sw.WriteLineAsync(content).ConfigureAwait(false);
+                    }
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await sw.FlushAsync().ConfigureAwait(false);
+                }
+            }
+
+            return Core();
+        }
+
+        [NotNull]
+        public Task AppendAsync([NotNull] string contents,
+            Encoding encoding = null,
+            CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return Task.FromCanceled(cancellationToken);
+            }
+
+            async Task Core()
+            {
+                using (var fs = this.Open(FileMode.Append, FileAccess.Write))
+                using (var sw = new StreamWriter(fs, encoding ?? Encoding.GetValueFor(this)))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await sw.WriteAsync(contents).ConfigureAwait(false);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await sw.FlushAsync().ConfigureAwait(false);
+                }
+            }
+
+            return Core();
+        }
+
+        [NotNull]
+        public Task WriteAsync([NotNull] byte[] bytes,
+            CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return Task.FromCanceled(cancellationToken);
+            }
+
+            async Task Core()
+            {
+                using (var fs = this.Open(FileMode.Create, FileAccess.Write))
+                {
+                    await fs.WriteAsync(bytes, 0, bytes.Length, cancellationToken);
+                    await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
+                }
+            }
+
+            return Core();
+        }
+
+        [NotNull]
+        public Task WriteAsync([NotNull] IEnumerable<string> contents,
+            Encoding encoding = null,
+            CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return Task.FromCanceled(cancellationToken);
+            }
+
+            async Task Core()
+            {
+                using (var fs = this.Open(FileMode.Create, FileAccess.Write))
+                using (var sw = new StreamWriter(fs, encoding ?? Encoding.GetValueFor(this)))
+                {
+                    foreach (var content in contents)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        await sw.WriteLineAsync(content).ConfigureAwait(false);
+                    }
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await sw.FlushAsync().ConfigureAwait(false);
+                }
+            }
+
+            return Core();
+        }
+
+        [NotNull]
+        public Task WriteAsync([NotNull] string contents,
+            Encoding encoding = null,
+            CancellationToken cancellationToken = default)
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return Task.FromCanceled(cancellationToken);
+            }
+
+            async Task Core()
+            {
+                using (var fs = this.Open(FileMode.Create, FileAccess.Write))
+                using (var sw = new StreamWriter(fs, encoding ?? Encoding.GetValueFor(this)))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await sw.WriteAsync(contents).ConfigureAwait(false);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await sw.FlushAsync().ConfigureAwait(false);
+                }
+            }
+
+            return Core();
+        }
 
         [NotNull]
         public FileStream Create(
