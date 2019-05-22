@@ -36,10 +36,10 @@ namespace Mio
 
         [Pure]
         public static bool Equals([CanBeNull] FilePath x, [CanBeNull] FilePath y)
-            => DefaultComparer.Equals(x, y);
+            => FileSystemPathComparer.Default.Equals(x, y);
 
         [Pure]
-        public static bool Equals([CanBeNull] FilePath x, [CanBeNull] FilePath y, [NotNull] Comparer comparer)
+        public static bool Equals([CanBeNull] FilePath x, [CanBeNull] FilePath y, [NotNull] FileSystemPathComparer comparer)
             => comparer.Equals(x, y);
 
         [Pure]
@@ -47,7 +47,7 @@ namespace Mio
             => Equals(this, other);
 
         [Pure]
-        public bool Equals([CanBeNull] FilePath other, [NotNull] Comparer comparer)
+        public bool Equals([CanBeNull] FilePath other, [NotNull] FileSystemPathComparer comparer)
             => Equals(this, other, comparer);
 
         [Pure]

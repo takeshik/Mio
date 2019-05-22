@@ -16,7 +16,7 @@ namespace Mio
         private protected const int DefaultFileStreamBufferSize = 4096;
 
         [NotNull]
-        protected string FullName { get; }
+        protected internal string FullName { get; }
 
         [NotNull]
         public string Name
@@ -31,15 +31,15 @@ namespace Mio
             => Path.GetExtension(this.FullName);
 
         public bool ExtensionEquals([CanBeNull] string extension)
-            => this.ExtensionEquals(extension, DefaultComparer);
+            => this.ExtensionEquals(extension, FileSystemPathComparer.CaseInsensitive);
 
-        public bool ExtensionEquals([CanBeNull] string extension, [NotNull] Comparer comparer)
+        public bool ExtensionEquals([CanBeNull] string extension, [NotNull] FileSystemPathComparer comparer)
             => comparer.Equals(this.Extension.TrimStart('.'), extension?.TrimStart('.'));
 
         public bool IsDescendantOf([NotNull] DirectoryPath directory)
-            => this.IsDescendantOf(directory, DefaultComparer);
+            => this.IsDescendantOf(directory, FileSystemPathComparer.Default);
 
-        public bool IsDescendantOf([NotNull] DirectoryPath directory, [NotNull] Comparer comparer)
+        public bool IsDescendantOf([NotNull] DirectoryPath directory, [NotNull] FileSystemPathComparer comparer)
             => this.FullName.Length >= directory.FullName.Length
                 && comparer.Equals(directory.FullName, this.FullName.Substring(0, directory.FullName.Length));
 

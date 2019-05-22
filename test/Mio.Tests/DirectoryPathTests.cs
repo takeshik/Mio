@@ -103,8 +103,8 @@ namespace Mio.Tests
         public void ExtensionEqualsWithComparerJudgesByTheirBehavior()
         {
             var dir = new DirectoryPath("foo/bar.baz");
-            Assert.True(dir.ExtensionEquals("Baz", FileSystemPath.CaseInsensitiveComparer));
-            Assert.False(dir.ExtensionEquals("Baz", FileSystemPath.CaseSensitiveComparer));
+            Assert.True(dir.ExtensionEquals("Baz", FileSystemPathComparer.CaseInsensitive));
+            Assert.False(dir.ExtensionEquals("Baz", FileSystemPathComparer.CaseInsensitive));
         }
 
         [Fact]
@@ -146,8 +146,8 @@ namespace Mio.Tests
         {
             var dir1 = new DirectoryPath("foobar");
             var dir2 = new DirectoryPath("FooBAR");
-            Assert.True(dir1.Equals(dir2, FileSystemPath.CaseInsensitiveComparer));
-            Assert.False(dir1.Equals(dir2, FileSystemPath.CaseSensitiveComparer));
+            Assert.True(dir1.Equals(dir2, FileSystemPathComparer.CaseInsensitive));
+            Assert.False(dir1.Equals(dir2, FileSystemPathComparer.CaseSensitive));
         }
 
         [Fact]
@@ -247,8 +247,8 @@ namespace Mio.Tests
         {
             var dir1 = new DirectoryPath("foo/bar/baz");
             var dir2 = new DirectoryPath("FOO");
-            Assert.True(dir1.IsDescendantOf(dir2, FileSystemPath.CaseInsensitiveComparer));
-            Assert.False(dir1.IsDescendantOf(dir2, FileSystemPath.CaseSensitiveComparer));
+            Assert.True(dir1.IsDescendantOf(dir2, FileSystemPathComparer.CaseInsensitive));
+            Assert.False(dir1.IsDescendantOf(dir2, FileSystemPathComparer.CaseSensitive));
         }
 
         [Fact]
