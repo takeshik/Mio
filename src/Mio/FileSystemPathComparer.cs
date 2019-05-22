@@ -59,12 +59,6 @@ namespace Mio
                 => string.Equals(x, y, StringComparison.OrdinalIgnoreCase);
         }
 
-        /// <remarks>
-        /// Currently, this is equals to <see cref="CaseInsensitive"/>.
-        /// Some filesystems are case-sensitive, but others are not. Therefore the default is loosen the condition of equality.
-        /// </remarks>
-        public static FileSystemPathComparer Default => CaseInsensitive;
-
         public static FileSystemPathComparer CaseSensitive { get; } = new CaseSensitiveImpl();
 
         public static FileSystemPathComparer CaseInsensitive { get; } = new CaseInsensitiveImpl();

@@ -7,13 +7,22 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using JetBrains.Annotations;
+using Mio.Utils;
 
 namespace Mio
 {
     public abstract partial class FileSystemPath
     {
         private protected const int DefaultFileStreamBufferSize = 4096;
+
+        public static LayeredState<FileSystemPathComparer, (FileSystemPath, FileSystemPath)> Comparer { get; }
+            // Some filesystems are case-sensitive, but others are not. Therefore the default is loosen the condition of equality.
+            = new LayeredState<FileSystemPathComparer, (FileSystemPath, FileSystemPath)>(FileSystemPathComparer.CaseInsensitive);
+
+        public static LayeredState<Encoding, FileSystemPath> Encoding { get; }
+            = new LayeredState<Encoding, FileSystemPath>(new UTF8Encoding(false, true));
 
         [NotNull]
         protected internal string FullName { get; }
