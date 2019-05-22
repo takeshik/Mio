@@ -35,7 +35,7 @@ namespace Mio.Destructive
             => File.Encrypt(this.FullName);
 
         public void Decrypt()
-            => File.Encrypt(this.FullName);
+            => File.Decrypt(this.FullName);
 
         public void SetCreationTime(DateTimeOffset creationTime)
             => D.SetCreationTimeUtc(this.FullName, creationTime.UtcDateTime);
