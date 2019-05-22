@@ -35,12 +35,8 @@ namespace Mio
             => !Equals(x, y);
 
         [Pure]
-        public static bool Equals([CanBeNull] FilePath x, [CanBeNull] FilePath y)
-            => FileSystemPathComparer.Default.Equals(x, y);
-
-        [Pure]
-        public static bool Equals([CanBeNull] FilePath x, [CanBeNull] FilePath y, [NotNull] FileSystemPathComparer comparer)
-            => comparer.Equals(x, y);
+        public static bool Equals([CanBeNull] FilePath x, [CanBeNull] FilePath y, FileSystemPathComparer comparer = null)
+            => (comparer ?? Comparer.GetValueFor((x, y))).Equals(x, y);
 
         [Pure]
         public bool Equals(FilePath other)
@@ -95,31 +91,17 @@ namespace Mio
 
         [NotNull]
         [ItemNotNull]
-        public string[] ReadAllLines()
-            => F.ReadAllLines(this.FullName);
+        public string[] ReadAllLines(Encoding encoding = null)
+            => F.ReadAllLines(this.FullName, encoding ?? Encoding.GetValueFor(this));
+
+        [NotNull]
+        public string ReadAllText(Encoding encoding = null)
+            => F.ReadAllText(this.FullName, encoding ?? Encoding.GetValueFor(this));
 
         [NotNull]
         [ItemNotNull]
-        public string[] ReadAllLines([NotNull] Encoding encoding)
-            => F.ReadAllLines(this.FullName, encoding);
-
-        [NotNull]
-        public string ReadAllText()
-            => F.ReadAllText(this.FullName);
-
-        [NotNull]
-        public string ReadAllText([NotNull] Encoding encoding)
-            => F.ReadAllText(this.FullName, encoding);
-
-        [NotNull]
-        [ItemNotNull]
-        public IEnumerable<string> ReadLines()
-            => F.ReadLines(this.FullName);
-
-        [NotNull]
-        [ItemNotNull]
-        public IEnumerable<string> ReadLines([NotNull] Encoding encoding)
-            => F.ReadLines(this.FullName, encoding);
+        public IEnumerable<string> ReadLines(Encoding encoding = null)
+            => F.ReadLines(this.FullName, encoding ?? Encoding.GetValueFor(this));
 
         [NotNull]
         public FileStream OpenRead(
@@ -130,18 +112,11 @@ namespace Mio
 
         [NotNull]
         public StreamReader OpenReadText(
+            Encoding encoding = null,
             FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
-            => new StreamReader(new FileStream(this.FullName, FileMode.Open, FileAccess.Read, share, bufferSize, options));
-
-        [NotNull]
-        public StreamReader OpenReadText(
-            [NotNull] Encoding encoding,
-            FileShare share = FileShare.Read,
-            int bufferSize = DefaultFileStreamBufferSize,
-            FileOptions options = FileOptions.Asynchronous)
-            => new StreamReader(new FileStream(this.FullName, FileMode.Open, FileAccess.Read, share, bufferSize, options), encoding);
+            => new StreamReader(new FileStream(this.FullName, FileMode.Open, FileAccess.Read, share, bufferSize, options), encoding ?? Encoding.GetValueFor(this));
 
         public void CopyTo([NotNull] DestructiveFilePath destination)
             => F.Copy(this.FullName, destination.FullName, true);

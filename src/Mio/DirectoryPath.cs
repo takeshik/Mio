@@ -44,12 +44,8 @@ namespace Mio
             => new DirectoryPath(D.GetCurrentDirectory());
 
         [Pure]
-        public static bool Equals([CanBeNull] DirectoryPath x, [CanBeNull] DirectoryPath y)
-            => Equals(x, y, FileSystemPathComparer.Default);
-
-        [Pure]
-        public static bool Equals([CanBeNull] DirectoryPath x, [CanBeNull] DirectoryPath y, [NotNull] FileSystemPathComparer comparer)
-            => comparer.Equals(x, y);
+        public static bool Equals([CanBeNull] DirectoryPath x, [CanBeNull] DirectoryPath y, FileSystemPathComparer comparer = null)
+            => (comparer ?? Comparer.GetValueFor((x, y))).Equals(x, y);
 
         [Pure]
         public bool Equals(DirectoryPath other)

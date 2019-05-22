@@ -72,54 +72,38 @@ namespace Mio.Destructive
         public void MoveTo([NotNull] DestructiveFilePath destination)
             => F.Move(this.FullName, destination.FullName);
 
-        public void Append([NotNull] IEnumerable<string> contents)
-            => F.AppendAllLines(this.FullName, contents);
+        public void Append([NotNull] IEnumerable<string> contents, Encoding encoding = null)
+            => F.AppendAllLines(this.FullName, contents, encoding ?? Encoding.GetValueFor(this));
 
-        public void Append([NotNull] string contents)
-            => F.AppendAllText(this.FullName, contents);
+        public void Append([NotNull] string contents, Encoding encoding = null)
+            => F.AppendAllText(this.FullName, contents, encoding ?? Encoding.GetValueFor(this));
 
         public void Write([NotNull] byte[] bytes)
             => F.WriteAllBytes(this.FullName, bytes);
 
-        public void Write([NotNull] IEnumerable<string> contents)
-            => F.WriteAllLines(this.FullName, contents);
+        public void Write([NotNull] IEnumerable<string> contents, Encoding encoding = null)
+            => F.WriteAllLines(this.FullName, contents, encoding ?? Encoding.GetValueFor(this));
 
-        public void Write([NotNull] IEnumerable<string> contents, [NotNull] Encoding encoding)
-            => F.WriteAllLines(this.FullName, contents, encoding);
+        public void Write([NotNull] string[] contents, Encoding encoding = null)
+            => F.WriteAllLines(this.FullName, contents, encoding ?? Encoding.GetValueFor(this));
 
-        public void Write([NotNull] string[] contents)
-            => F.WriteAllLines(this.FullName, contents);
-
-        public void Write([NotNull] string[] contents, [NotNull] Encoding encoding)
-            => F.WriteAllLines(this.FullName, contents, encoding);
-
-        public void Write([NotNull] string contents)
-            => F.WriteAllText(this.FullName, contents);
-
-        public void Write([NotNull] string contents, [NotNull] Encoding encoding)
-            => F.WriteAllText(this.FullName, contents, encoding);
+        public void Write([NotNull] string contents, Encoding encoding = null)
+            => F.WriteAllText(this.FullName, contents, encoding ?? Encoding.GetValueFor(this));
 
         [NotNull]
         public FileStream Create(
-            FileShare share = FileShare.None,
+            FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
             => new FileStream(this.FullName, FileMode.Create, FileAccess.ReadWrite, share, bufferSize, options);
 
         [NotNull]
         public StreamWriter CreateText(
-            FileShare share = FileShare.None,
+            Encoding encoding = null,
+            FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
-            => new StreamWriter(new FileStream(this.FullName, FileMode.Create, FileAccess.ReadWrite, share, bufferSize, options));
-
-        [NotNull]
-        public StreamWriter CreateText(
-            [NotNull] Encoding encoding,
-            FileShare share = FileShare.None,
-            int bufferSize = DefaultFileStreamBufferSize,
-            FileOptions options = FileOptions.Asynchronous)
-            => new StreamWriter(new FileStream(this.FullName, FileMode.Create, FileAccess.ReadWrite, share, bufferSize, options), encoding);
+            => new StreamWriter(new FileStream(this.FullName, FileMode.Create, FileAccess.ReadWrite, share, bufferSize, options), encoding ?? Encoding.GetValueFor(this));
 
         [NotNull]
         public FileStream Open(
@@ -132,24 +116,17 @@ namespace Mio.Destructive
 
         [NotNull]
         public FileStream OpenWrite(
-            FileShare share = FileShare.None,
+            FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
             => new FileStream(this.FullName, FileMode.OpenOrCreate, FileAccess.Write, share, bufferSize, options);
 
         [NotNull]
         public StreamWriter OpenWriteText(
-            FileShare share = FileShare.None,
+            Encoding encoding = null,
+            FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
-            => new StreamWriter(new FileStream(this.FullName, FileMode.OpenOrCreate, FileAccess.Write, share, bufferSize, options));
-
-        [NotNull]
-        public StreamWriter OpenWriteText(
-            [NotNull] Encoding encoding,
-            FileShare share = FileShare.None,
-            int bufferSize = DefaultFileStreamBufferSize,
-            FileOptions options = FileOptions.Asynchronous)
-            => new StreamWriter(new FileStream(this.FullName, FileMode.OpenOrCreate, FileAccess.Write, share, bufferSize, options), encoding);
+            => new StreamWriter(new FileStream(this.FullName, FileMode.OpenOrCreate, FileAccess.Write, share, bufferSize, options), encoding ?? Encoding.GetValueFor(this));
     }
 }

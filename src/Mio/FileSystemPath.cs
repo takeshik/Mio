@@ -39,18 +39,12 @@ namespace Mio
         public string Extension
             => Path.GetExtension(this.FullName);
 
-        public bool ExtensionEquals([CanBeNull] string extension)
-            => this.ExtensionEquals(extension, FileSystemPathComparer.CaseInsensitive);
+        public bool ExtensionEquals([CanBeNull] string extension, FileSystemPathComparer comparer = null)
+            => (comparer ?? Comparer.GetValueFor((this, this))).Equals(this.Extension.TrimStart('.'), extension?.TrimStart('.'));
 
-        public bool ExtensionEquals([CanBeNull] string extension, [NotNull] FileSystemPathComparer comparer)
-            => comparer.Equals(this.Extension.TrimStart('.'), extension?.TrimStart('.'));
-
-        public bool IsDescendantOf([NotNull] DirectoryPath directory)
-            => this.IsDescendantOf(directory, FileSystemPathComparer.Default);
-
-        public bool IsDescendantOf([NotNull] DirectoryPath directory, [NotNull] FileSystemPathComparer comparer)
+        public bool IsDescendantOf([NotNull] DirectoryPath directory, FileSystemPathComparer comparer = null)
             => this.FullName.Length >= directory.FullName.Length
-                && comparer.Equals(directory.FullName, this.FullName.Substring(0, directory.FullName.Length));
+                && (comparer ?? Comparer.GetValueFor((this, directory))).Equals(directory.FullName, this.FullName.Substring(0, directory.FullName.Length));
 
         [NotNull]
         [ItemNotNull]
