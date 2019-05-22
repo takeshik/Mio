@@ -17,6 +17,8 @@ namespace Mio
     public class DirectoryPath : FileSystemPath,
         IEquatable<DirectoryPath>
     {
+        private const string _defaultSearchPattern = "*";
+
         public DirectoryPath([NotNull] string path)
             : base(path, true)
         {
@@ -113,33 +115,33 @@ namespace Mio
 
         [NotNull]
         [ItemNotNull]
-        public IEnumerable<FilePath> EnumerateFiles(string searchPattern = "*")
+        public IEnumerable<FilePath> EnumerateFiles(string searchPattern = _defaultSearchPattern)
             => D.EnumerateFiles(this.FullName, searchPattern).Select(x => new FilePath(x, false));
 
         [NotNull]
         [ItemNotNull]
-        public IEnumerable<FilePath> EnumerateAllFiles(string searchPattern = "*")
+        public IEnumerable<FilePath> EnumerateAllFiles(string searchPattern = _defaultSearchPattern)
             => D.EnumerateFiles(this.FullName, searchPattern, SearchOption.AllDirectories).Select(x => new FilePath(x, false));
 
         [NotNull]
         [ItemNotNull]
-        public IEnumerable<DirectoryPath> EnumerateDirectories(string searchPattern = "*")
+        public IEnumerable<DirectoryPath> EnumerateDirectories(string searchPattern = _defaultSearchPattern)
             => D.EnumerateDirectories(this.FullName, searchPattern).Select(x => new DirectoryPath(x, false));
 
         [NotNull]
         [ItemNotNull]
-        public IEnumerable<DirectoryPath> EnumerateAllDirectories(string searchPattern = "*")
+        public IEnumerable<DirectoryPath> EnumerateAllDirectories(string searchPattern = _defaultSearchPattern)
             => D.EnumerateDirectories(this.FullName, searchPattern, SearchOption.AllDirectories).Select(x => new DirectoryPath(x, false));
 
         [NotNull]
         [ItemNotNull]
-        public IEnumerable<FileSystemPath> EnumerateEntries(string searchPattern = "*")
+        public IEnumerable<FileSystemPath> EnumerateEntries(string searchPattern = _defaultSearchPattern)
             => D.EnumerateDirectories(this.FullName, searchPattern).Select(x => (FileSystemPath)new DirectoryPath(x, false))
                 .Concat(D.EnumerateFiles(this.FullName, searchPattern).Select(x => (FileSystemPath)new FilePath(x, false)));
 
         [NotNull]
         [ItemNotNull]
-        public IEnumerable<FileSystemPath> EnumerateAllEntries(string searchPattern = "*")
+        public IEnumerable<FileSystemPath> EnumerateAllEntries(string searchPattern = _defaultSearchPattern)
             => D.EnumerateDirectories(this.FullName, searchPattern, SearchOption.AllDirectories).Select(x => (FileSystemPath)new DirectoryPath(x, false))
                 .Concat(D.EnumerateFiles(this.FullName, searchPattern, SearchOption.AllDirectories).Select(x => (FileSystemPath)new FilePath(x, false)));
 

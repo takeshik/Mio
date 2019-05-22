@@ -85,9 +85,9 @@ namespace Mio
                 else if (normalizedPath != path && normalizedPath[normalizedPath.Length - 1] == Path.VolumeSeparatorChar)
                 {
                     // If Path.VolumeSeparatorChar == Path.DirectorySeparatorChar, this clause must be meaningless.
-                    // Before trimming, path must be like "C:/". "C:" not means "C:/" but "C:/.", so keep the last
+                    // Before trimming, path must be like "C:/". "C:" does not mean "C:/" but "C:/.", so keep the last
                     // directory separator if original argument ends with directory separator.
-                    normalizedPath = normalizedPath + Path.DirectorySeparatorChar;
+                    normalizedPath += Path.DirectorySeparatorChar;
                 }
                 normalizedPath = Path.GetFullPath(normalizedPath);
                 this.FullName = normalizedPath;

@@ -29,13 +29,13 @@ namespace Mio.Destructive
         {
         }
 
-        [Pure]
-        public override string ToString()
-            => "<DestructiveFile: " + this.FullName + ">";
-
         [NotNull]
         public static DestructiveFilePath CreateTempFile()
             => new DestructiveFilePath(Path.GetTempFileName());
+
+        [Pure]
+        public override string ToString()
+            => "<DestructiveFile: " + this.FullName + ">";
 
         [NotNull]
         public Uri ToUri()
