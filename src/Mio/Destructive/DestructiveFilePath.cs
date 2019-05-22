@@ -24,6 +24,11 @@ namespace Mio.Destructive
         {
         }
 
+        internal DestructiveFilePath(string path, bool normalize)
+            : base(path, normalize)
+        {
+        }
+
         [Pure]
         public override string ToString()
             => "<DestructiveFile: " + this.FullName + ">";

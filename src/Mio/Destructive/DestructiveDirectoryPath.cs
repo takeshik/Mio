@@ -24,6 +24,11 @@ namespace Mio.Destructive
         public static void SetCurrentDirectory([NotNull] DestructiveDirectoryPath directory)
             => D.SetCurrentDirectory(directory.FullName);
 
+        internal DestructiveDirectoryPath(string path, bool normalize)
+            : base(path, normalize)
+        {
+        }
+
         [Pure]
         public override string ToString()
             => "<DestructiveDir: " + this.FullName + ">";

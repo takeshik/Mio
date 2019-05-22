@@ -152,6 +152,6 @@ namespace Mio
         [Pure]
         [NotNull]
         internal DestructiveFilePath CreateDestructive()
-            => new DestructiveFilePath(this.FullName);
+            => new DestructiveFilePath(this.FullName, false);
     }
 }
