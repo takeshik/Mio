@@ -18,6 +18,7 @@ obj/
 # IDE user-specific files
 /*.suo
 /.vs/
+/.idea/
 /_ReSharper.*/
 *.user
 *.psess
