@@ -43,6 +43,10 @@ namespace Mio
         public static DirectoryPath GetCurrentDirectory()
             => new DirectoryPath(D.GetCurrentDirectory());
 
+        [NotNull]
+        public static IReadOnlyList<DirectoryPath> GetRootDirectories()
+            => Array.ConvertAll(D.GetLogicalDrives(), x => new DirectoryPath(x, false));
+
         [Pure]
         public static bool Equals([CanBeNull] DirectoryPath x, [CanBeNull] DirectoryPath y, FileSystemPathComparer comparer = null)
             => (comparer ?? Comparer.GetValueFor((x, y))).Equals(x, y);
@@ -98,6 +102,14 @@ namespace Mio
         [NotNull]
         public DirectoryPath ChildDirectory([NotNull] string path)
             => new DirectoryPath(Path.Combine(this.FullName, path));
+
+        [NotNull]
+        public FilePath RandomNamedChildFile(string prefix = "", string suffix = "")
+            => this.ChildFile(prefix + Path.GetRandomFileName() + suffix);
+
+        [NotNull]
+        public DirectoryPath RandomNamedChildDirectory(string prefix = "", string suffix = "")
+            => this.ChildDirectory(prefix + Path.GetRandomFileName() + suffix);
 
         [NotNull]
         [ItemNotNull]

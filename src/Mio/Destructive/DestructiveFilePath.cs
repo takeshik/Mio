@@ -36,6 +36,11 @@ namespace Mio.Destructive
         [NotNull]
         public static DestructiveFilePath CreateTempFile()
             => new DestructiveFilePath(Path.GetTempFileName());
+
+        [NotNull]
+        public Uri ToUri()
+            => new Uri(this.FullName);
+
         [CanBeNull]
         public new DestructiveFilePath NullIfNotExists()
             => this.Exists() ? this : null;
@@ -74,6 +79,15 @@ namespace Mio.Destructive
 
         public void MoveTo([NotNull] DestructiveFilePath destination)
             => F.Move(this.FullName, destination.FullName);
+
+        public void Append([NotNull] byte[] bytes)
+        {
+            using (var fs = this.Open(FileMode.Append, FileAccess.Write))
+            {
+                fs.Write(bytes, 0, bytes.Length);
+                fs.Flush();
+            }
+        }
 
         public void Append([NotNull] IEnumerable<string> contents, Encoding encoding = null)
             => F.AppendAllLines(this.FullName, contents, encoding ?? Encoding.GetValueFor(this));
