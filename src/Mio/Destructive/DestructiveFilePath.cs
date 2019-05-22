@@ -39,7 +39,7 @@ namespace Mio.Destructive
             => F.Encrypt(this.FullName);
 
         public void Decrypt()
-            => F.Encrypt(this.FullName);
+            => F.Decrypt(this.FullName);
 
         public void SetCreationTime(DateTimeOffset creationTime)
             => F.SetCreationTimeUtc(this.FullName, creationTime.UtcDateTime);
