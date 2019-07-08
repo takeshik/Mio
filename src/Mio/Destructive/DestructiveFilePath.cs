@@ -52,7 +52,7 @@ namespace Mio.Destructive
 
         public bool Delete()
         {
-            if (F.Exists(this.FullName)) return false;
+            if (!F.Exists(this.FullName)) return false;
             try
             {
                 F.Delete(this.FullName);
