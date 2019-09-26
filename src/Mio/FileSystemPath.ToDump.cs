@@ -11,27 +11,15 @@ namespace Mio
 {
     partial class FileSystemPath
     {
-        private static readonly Type _hyperlinqType = Type.GetType("LINQPad.Hyperlinq, LINQPad");
-
-        [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
-        private sealed class DumpProxy
-        {
-            private readonly FileSystemPath _path;
-
-            public DumpProxy(FileSystemPath path)
-            {
-                this._path = path;
-            }
-
-            public override string ToString()
-                => this._path.FullName;
-        }
+        private static readonly Type _hyperlinqType = Type.GetType("LINQPad.Hyperlinq, LINQPad.Runtime")
+            // LINQPad 5 or below
+            ?? Type.GetType("LINQPad.Hyperlinq, LINQPad");
 
         [UsedImplicitly]
         [NotNull]
         private protected object ToDump()
             => _hyperlinqType == null
-                ? new DumpProxy(this)
+                ? this.ToString()
                 : Activator.CreateInstance(_hyperlinqType, this.FullName, this.ToString());
     }
 }
