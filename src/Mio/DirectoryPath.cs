@@ -81,13 +81,13 @@ namespace Mio
             => D.Exists(this.FullName);
 
         public override DateTimeOffset GetCreationTime()
-            => new DateTimeOffset(D.GetCreationTimeUtc(this.FullName), TimeSpan.Zero);
+            => new DateTimeOffset(D.GetCreationTimeUtc(this.FullName));
 
         public override DateTimeOffset GetLastAccessTime()
-            => new DateTimeOffset(D.GetLastAccessTimeUtc(this.FullName), TimeSpan.Zero);
+            => new DateTimeOffset(D.GetLastAccessTimeUtc(this.FullName));
 
         public override DateTimeOffset GetLastWriteTime()
-            => new DateTimeOffset(D.GetLastWriteTimeUtc(this.FullName), TimeSpan.Zero);
+            => new DateTimeOffset(D.GetLastWriteTimeUtc(this.FullName));
 
         [CanBeNull]
         public DirectoryPath NullIfNotExists()
