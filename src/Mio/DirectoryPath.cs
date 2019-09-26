@@ -11,6 +11,9 @@ using System.Linq;
 using JetBrains.Annotations;
 using Mio.Destructive;
 using D = System.IO.Directory;
+#if NETCOREAPP2_1
+using System.IO.Enumeration;
+#endif
 
 namespace Mio
 {
@@ -144,6 +147,93 @@ namespace Mio
         public IEnumerable<FileSystemPath> EnumerateAllEntries(string searchPattern = _defaultSearchPattern)
             => D.EnumerateDirectories(this.FullName, searchPattern, SearchOption.AllDirectories).Select(x => (FileSystemPath)new DirectoryPath(x, false))
                 .Concat(D.EnumerateFiles(this.FullName, searchPattern, SearchOption.AllDirectories).Select(x => (FileSystemPath)new FilePath(x, false)));
+
+        [NotNull]
+        [ItemNotNull]
+        [MustUseReturnValue]
+        public IEnumerable<FileSystemPath> SafeEnumerateEntries(
+            FileAttributes attributesToSkip = default,
+            Func<DirectoryPath, bool> recursionPredicate = null)
+        {
+#if NETCOREAPP2_1
+            return new FileSystemEnumerable<FileSystemPath>(
+                this.FullName,
+                (ref FileSystemEntry x) => x.IsDirectory
+                    ? (FileSystemPath) new DirectoryPath(x.ToFullPath())
+                    : new FilePath(x.ToFullPath()),
+                new EnumerationOptions()
+                {
+                    AttributesToSkip = attributesToSkip,
+                    IgnoreInaccessible = true,
+                    RecurseSubdirectories = true,
+                    ReturnSpecialDirectories = false,
+                    // MatchCasing and MatchType are not cared since searchPattern is not used
+                }
+            )
+            {
+                ShouldRecursePredicate = recursionPredicate == null
+                    ? (FileSystemEnumerable<FileSystemPath>.FindPredicate) null
+                    : (ref FileSystemEntry x) => recursionPredicate(new DirectoryPath(x.ToFullPath())),
+            };
+#else
+            IEnumerable<FileSystemPath> Core(string origin)
+            {
+                var queue = new Queue<string>();
+                var directories = Enumerable.Empty<string>();
+                try
+                {
+                    directories = D.EnumerateDirectories(origin);
+                }
+                catch
+                {
+                    // skip
+                }
+
+                foreach (var dir in directories)
+                {
+                    // In .NET Standard 2.1, this GetAttributes should be replaced by EnumerationOptions.AttributesToSkip
+                    if (attributesToSkip == default || (File.GetAttributes(dir) & attributesToSkip) == 0)
+                    {
+                        var path = new DirectoryPath(dir, false);
+                        if (recursionPredicate == null || recursionPredicate(path))
+                        {
+                            queue.Enqueue(dir);
+                        }
+                        yield return path;
+                    }
+                }
+
+                var files = Enumerable.Empty<string>();
+                try
+                {
+                    files = D.EnumerateFiles(origin);
+                }
+                catch
+                {
+                    // skip
+                }
+
+                foreach (var file in files)
+                {
+                    if (attributesToSkip == default || (File.GetAttributes(file) & attributesToSkip) == 0)
+                    {
+                        yield return new FilePath(file, false);
+                    }
+                }
+
+                while (queue.Count > 0)
+                {
+                    var dir = queue.Dequeue();
+                    foreach (var x in Core(dir))
+                    {
+                        yield return x;
+                    }
+                }
+            }
+
+            return Core(this.FullName);
+#endif
+        }
 
         [NotNull]
         public DirectoryPath EnsureCreated()
