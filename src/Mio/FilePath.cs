@@ -54,7 +54,7 @@ namespace Mio
 
         [Pure]
         public override int GetHashCode()
-            => StringComparer.OrdinalIgnoreCase.GetHashCode(this.FullName);
+            => StringComparer.Ordinal.GetHashCode(this.FullName);
 
         [Pure]
         public override string ToString()
