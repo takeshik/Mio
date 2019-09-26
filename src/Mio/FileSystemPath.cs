@@ -7,12 +7,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Text;
 using JetBrains.Annotations;
 using Mio.Utils;
 
 namespace Mio
 {
+    [DataContract]
+    [KnownType(typeof(FilePath))]
+    [KnownType(typeof(DirectoryPath))]
+    [KnownType(typeof(Destructive.DestructiveFilePath))]
+    [KnownType(typeof(Destructive.DestructiveDirectoryPath))]
     public abstract partial class FileSystemPath
     {
         private protected const int DefaultFileStreamBufferSize = 4096;
@@ -25,6 +31,7 @@ namespace Mio
             = new LayeredState<Encoding, FileSystemPath>(new UTF8Encoding(false, true));
 
         [NotNull]
+        [DataMember]
         protected internal string FullName { get; }
 
         [NotNull]
