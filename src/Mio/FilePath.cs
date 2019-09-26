@@ -146,7 +146,7 @@ namespace Mio
             async Task<string[]> Core()
             {
                 var lines = new List<string>();
-                using (var sr = this.OpenReadText(encoding))
+                using (var sr = this.OpenReadText(encoding ?? Encoding.GetValueFor(this)))
                 {
                     string str;
                     while ((str = await sr.ReadLineAsync().ConfigureAwait(false)) != null)
@@ -175,7 +175,7 @@ namespace Mio
                 return Task.FromCanceled<string>(cancellationToken);
             }
 
-            using (var sr = this.OpenReadText(encoding))
+            using (var sr = this.OpenReadText(encoding ?? Encoding.GetValueFor(this)))
             using (cancellationToken.Register(x => ((StreamReader)x).Dispose(), sr, false))
             {
                 return sr.ReadToEndAsync();
