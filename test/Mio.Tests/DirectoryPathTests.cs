@@ -104,7 +104,7 @@ namespace Mio.Tests
         {
             var dir = new DirectoryPath("foo/bar.baz");
             Assert.True(dir.ExtensionEquals("Baz", FileSystemPathComparer.CaseInsensitive));
-            Assert.False(dir.ExtensionEquals("Baz", FileSystemPathComparer.CaseInsensitive));
+            Assert.False(dir.ExtensionEquals("Baz", FileSystemPathComparer.CaseSensitive));
         }
 
         [Fact]
