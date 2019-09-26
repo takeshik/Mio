@@ -109,6 +109,9 @@ namespace Mio
         [ItemNotNull]
         public Task<byte[]> ReadAllBytesAsync(CancellationToken cancellationToken = default)
         {
+#if NETCOREAPP2_1
+            return F.ReadAllBytesAsync(this.FullName, cancellationToken);
+#else
             if (cancellationToken.IsCancellationRequested)
             {
                 return Task.FromCanceled<byte[]>(cancellationToken);
@@ -125,12 +128,16 @@ namespace Mio
             }
 
             return Core();
+#endif
         }
 
         [NotNull]
         [ItemNotNull]
         public Task<string[]> ReadAllLinesAsync(Encoding encoding = null, CancellationToken cancellationToken = default)
         {
+#if NETCOREAPP2_1
+            return F.ReadAllLinesAsync(this.FullName, encoding ?? Encoding.GetValueFor(this), cancellationToken);
+#else
             if (cancellationToken.IsCancellationRequested)
             {
                 return Task.FromCanceled<string[]>(cancellationToken);
@@ -153,12 +160,16 @@ namespace Mio
             }
 
             return Core();
+#endif
         }
 
         [NotNull]
         [ItemNotNull]
         public Task<string> ReadAllTextAsync(Encoding encoding = null, CancellationToken cancellationToken = default)
         {
+#if NETCOREAPP2_1
+            return F.ReadAllTextAsync(this.FullName, encoding ?? Encoding.GetValueFor(this), cancellationToken);
+#else
             if (cancellationToken.IsCancellationRequested)
             {
                 return Task.FromCanceled<string>(cancellationToken);
@@ -169,6 +180,7 @@ namespace Mio
             {
                 return sr.ReadToEndAsync();
             }
+#endif
         }
 
         [NotNull]

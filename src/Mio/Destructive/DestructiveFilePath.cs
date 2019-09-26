@@ -135,6 +135,9 @@ namespace Mio.Destructive
             Encoding encoding = null,
             CancellationToken cancellationToken = default)
         {
+#if NETCOREAPP2_1
+            return F.AppendAllLinesAsync(this.FullName, contents, encoding ?? Encoding.GetValueFor(this), cancellationToken);
+#else
             if (cancellationToken.IsCancellationRequested)
             {
                 return Task.FromCanceled(cancellationToken);
@@ -156,6 +159,7 @@ namespace Mio.Destructive
             }
 
             return Core();
+#endif
         }
 
         [NotNull]
@@ -163,6 +167,9 @@ namespace Mio.Destructive
             Encoding encoding = null,
             CancellationToken cancellationToken = default)
         {
+#if NETCOREAPP2_1
+            return F.AppendAllTextAsync(this.FullName, contents, encoding ?? Encoding.GetValueFor(this), cancellationToken);
+#else
             if (cancellationToken.IsCancellationRequested)
             {
                 return Task.FromCanceled(cancellationToken);
@@ -181,12 +188,16 @@ namespace Mio.Destructive
             }
 
             return Core();
+#endif
         }
 
         [NotNull]
         public Task WriteAsync([NotNull] byte[] bytes,
             CancellationToken cancellationToken = default)
         {
+#if NETCOREAPP2_1
+            return F.WriteAllBytesAsync(this.FullName, bytes, cancellationToken);
+#else
             if (cancellationToken.IsCancellationRequested)
             {
                 return Task.FromCanceled(cancellationToken);
@@ -202,6 +213,7 @@ namespace Mio.Destructive
             }
 
             return Core();
+#endif
         }
 
         [NotNull]
@@ -209,6 +221,9 @@ namespace Mio.Destructive
             Encoding encoding = null,
             CancellationToken cancellationToken = default)
         {
+#if NETCOREAPP2_1
+            return F.WriteAllLinesAsync(this.FullName, contents, encoding ?? Encoding.GetValueFor(this), cancellationToken);
+#else
             if (cancellationToken.IsCancellationRequested)
             {
                 return Task.FromCanceled(cancellationToken);
@@ -230,6 +245,7 @@ namespace Mio.Destructive
             }
 
             return Core();
+#endif
         }
 
         [NotNull]
@@ -237,6 +253,9 @@ namespace Mio.Destructive
             Encoding encoding = null,
             CancellationToken cancellationToken = default)
         {
+#if NETCOREAPP2_1
+            return F.WriteAllTextAsync(this.FullName, contents, encoding ?? Encoding.GetValueFor(this), cancellationToken);
+#else
             if (cancellationToken.IsCancellationRequested)
             {
                 return Task.FromCanceled(cancellationToken);
@@ -255,6 +274,7 @@ namespace Mio.Destructive
             }
 
             return Core();
+#endif
         }
 
         [NotNull]
