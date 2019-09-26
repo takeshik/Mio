@@ -11,7 +11,7 @@ using D = System.IO.Directory;
 
 namespace Mio.Destructive
 {
-    public class DestructiveDirectoryPath : DirectoryPath
+    public sealed class DestructiveDirectoryPath : DirectoryPath
     {
         public new string FullName
             => base.FullName;

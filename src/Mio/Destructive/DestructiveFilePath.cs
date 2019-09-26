@@ -15,7 +15,7 @@ using F = System.IO.File;
 
 namespace Mio.Destructive
 {
-    public class DestructiveFilePath : FilePath
+    public sealed class DestructiveFilePath : FilePath
     {
         [NotNull]
         public new string FullName

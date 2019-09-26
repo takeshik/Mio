@@ -9,9 +9,9 @@ using System.Threading;
 
 namespace Mio.Utils
 {
-    public class LayeredState<TValue, TConditionArg>
+    public sealed class LayeredState<TValue, TConditionArg>
     {
-        private class Layer
+        private sealed class Layer
         {
             public Layer Parent { get; }
 
