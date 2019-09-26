@@ -46,9 +46,11 @@ namespace Mio
         public string Extension
             => Path.GetExtension(this.FullName);
 
+        [MustUseReturnValue]
         public bool ExtensionEquals([CanBeNull] string extension, FileSystemPathComparer comparer = null)
             => (comparer ?? Comparer.GetValueFor((this, this))).Equals(this.Extension.TrimStart('.'), extension?.TrimStart('.'));
 
+        [MustUseReturnValue]
         public bool IsDescendantOf([NotNull] DirectoryPath directory, FileSystemPathComparer comparer = null)
             => this.FullName.Length >= directory.FullName.Length
                 && (comparer ?? Comparer.GetValueFor((this, directory))).Equals(directory.FullName, this.FullName.Substring(0, directory.FullName.Length));
@@ -114,15 +116,20 @@ namespace Mio
                 : new DirectoryPath(path, false);
         }
 
+        [MustUseReturnValue]
         public FileAttributes GetAttributes()
             => File.GetAttributes(this.FullName);
 
+        [MustUseReturnValue]
         public abstract bool Exists();
 
+        [MustUseReturnValue]
         public abstract DateTimeOffset GetCreationTime();
 
+        [MustUseReturnValue]
         public abstract DateTimeOffset GetLastAccessTime();
 
+        [MustUseReturnValue]
         public abstract DateTimeOffset GetLastWriteTime();
     }
 }

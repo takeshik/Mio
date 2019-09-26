@@ -73,6 +73,7 @@ namespace Mio
             => new DateTimeOffset(F.GetLastWriteTimeUtc(this.FullName), TimeSpan.Zero).ToLocalTime();
 
         [CanBeNull]
+        [MustUseReturnValue]
         public FilePath NullIfNotExists()
             => this.Exists() ? this : null;
 
@@ -81,9 +82,11 @@ namespace Mio
         public FilePath WithExtension([CanBeNull] string extension)
             => new FilePath(Path.ChangeExtension(this.FullName, extension), false);
 
+        [MustUseReturnValue]
         public long GetSize64()
             => new FileInfo(this.FullName).Length;
 
+        [MustUseReturnValue]
         public int GetSize()
             => checked((int)this.GetSize64());
 
