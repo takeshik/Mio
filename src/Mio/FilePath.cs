@@ -64,13 +64,13 @@ namespace Mio
             => F.Exists(this.FullName);
 
         public override DateTimeOffset GetCreationTime()
-            => new DateTimeOffset(F.GetCreationTimeUtc(this.FullName), TimeSpan.Zero).ToLocalTime();
+            => new DateTimeOffset(F.GetCreationTime(this.FullName));
 
         public override DateTimeOffset GetLastAccessTime()
-            => new DateTimeOffset(F.GetLastAccessTimeUtc(this.FullName), TimeSpan.Zero).ToLocalTime();
+            => new DateTimeOffset(F.GetLastAccessTime(this.FullName));
 
         public override DateTimeOffset GetLastWriteTime()
-            => new DateTimeOffset(F.GetLastWriteTimeUtc(this.FullName), TimeSpan.Zero).ToLocalTime();
+            => new DateTimeOffset(F.GetLastWriteTime(this.FullName));
 
         [CanBeNull]
         [MustUseReturnValue]
