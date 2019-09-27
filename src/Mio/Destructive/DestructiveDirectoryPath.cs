@@ -33,6 +33,8 @@ namespace Mio.Destructive
         public override string ToString()
             => "<DestructiveDir: " + this.FullName + ">";
 
+        [Pure]
+        [NotNull]
         public Uri ToUri()
             => new Uri(this.FullName);
 
