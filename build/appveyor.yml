@@ -4,8 +4,8 @@ configuration: Release
 clone_depth: 1
 clone_folder: C:\build
 environment:
-  package_version: 2.0.0
-  assembly_version: 2.0.0
+  package_version: 2.0.1
+  assembly_version: 2.0.1
 nuget:
   disable_publish_on_pr: true
 before_build:
@@ -19,7 +19,7 @@ build:
   publish_nuget_symbols: true
   verbosity: normal
 artifacts:
-- path: src/Mio/bin/Release/netstandard2.0/*
+- path: src/Mio/bin/Release/*
   name: Mio
 deploy:
 - provider: NuGet
