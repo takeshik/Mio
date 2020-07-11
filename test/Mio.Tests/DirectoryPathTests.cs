@@ -235,6 +235,14 @@ namespace Mio.Tests
         }
 
         [Fact]
+        public void IsDescendantIsFalseIfFragmentStartsWith()
+        {
+            var dir1 = new DirectoryPath("fooo/bar/baz");
+            var dir2 = new DirectoryPath("foo");
+            Assert.False(dir1.IsDescendantOf(dir2));
+        }
+
+        [Fact]
         public void IsDescendantIgnoresCase()
         {
             var dir1 = new DirectoryPath("foo/bar/baz");
