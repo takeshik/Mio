@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using JetBrains.Annotations;
@@ -52,8 +53,7 @@ namespace Mio
 
         [MustUseReturnValue]
         public bool IsDescendantOf([NotNull] DirectoryPath directory, FileSystemPathComparer comparer = null)
-            => this.FullName.Length >= directory.FullName.Length
-                && (comparer ?? Comparer.GetValueFor((this, directory))).Equals(directory.FullName, this.FullName.Substring(0, directory.FullName.Length));
+            => this.Ancestors.Any(x => x.Equals(directory, comparer));
 
         [NotNull]
         [ItemNotNull]
