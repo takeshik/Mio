@@ -16,7 +16,7 @@ namespace Mio.Destructive
         public new string FullName
             => base.FullName;
 
-        public DestructiveDirectoryPath([NotNull] string path)
+        public DestructiveDirectoryPath(string path)
             : base(path)
         {
         }
@@ -26,7 +26,7 @@ namespace Mio.Destructive
         {
         }
 
-        public static void SetCurrentDirectory([NotNull] DirectoryPath directory)
+        public static void SetCurrentDirectory(DirectoryPath directory)
             => D.SetCurrentDirectory(directory.FullName);
 
         [Pure]
@@ -34,19 +34,16 @@ namespace Mio.Destructive
             => "<DestructiveDir: " + this.FullName + ">";
 
         [Pure]
-        [NotNull]
         public Uri ToUri()
             => new Uri(this.FullName);
 
-        [NotNull]
         public new DestructiveDirectoryPath EnsureCreated()
         {
             D.CreateDirectory(this.FullName);
             return this;
         }
 
-        [CanBeNull]
-        public new DestructiveDirectoryPath NullIfNotExists()
+        public new DestructiveDirectoryPath? NullIfNotExists()
             => this.Exists() ? this : null;
 
         public void SetAttributes(FileAttributes attributes)

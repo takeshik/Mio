@@ -17,9 +17,9 @@ namespace Mio
 
         public abstract int GetHashCode(DirectoryPath obj);
 
-        protected internal abstract bool Equals(string x, string y);
+        protected internal abstract bool Equals(string? x, string? y);
 
-        public bool Equals(FilePath x, FilePath y)
+        public bool Equals(FilePath? x, FilePath? y)
         {
             if (ReferenceEquals(x, y)) return true;
             if (ReferenceEquals(null, x)) return false;
@@ -27,7 +27,7 @@ namespace Mio
             return this.Equals(x.FullName, y.FullName);
         }
 
-        public bool Equals(DirectoryPath x, DirectoryPath y)
+        public bool Equals(DirectoryPath? x, DirectoryPath? y)
         {
             if (ReferenceEquals(x, y)) return true;
             if (ReferenceEquals(null, x)) return false;
@@ -43,7 +43,7 @@ namespace Mio
             public override int GetHashCode(DirectoryPath obj)
                 => obj.FullName.GetHashCode();
 
-            protected internal override bool Equals(string x, string y)
+            protected internal override bool Equals(string? x, string? y)
                 => x == y;
         }
 
@@ -55,7 +55,7 @@ namespace Mio
             public override int GetHashCode(DirectoryPath obj)
                 => StringComparer.OrdinalIgnoreCase.GetHashCode(obj.FullName);
 
-            protected internal override bool Equals(string x, string y)
+            protected internal override bool Equals(string? x, string? y)
                 => string.Equals(x, y, StringComparison.OrdinalIgnoreCase);
         }
 

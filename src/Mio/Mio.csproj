@@ -16,6 +16,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>I/O file</PackageTags>
     <Authors>takeshik</Authors>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
 </Project>

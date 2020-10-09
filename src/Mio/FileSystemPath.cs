@@ -24,38 +24,36 @@ namespace Mio
     {
         private protected const int DefaultFileStreamBufferSize = 4096;
 
-        public static LayeredState<FileSystemPathComparer, (FileSystemPath, FileSystemPath)> Comparer { get; }
+        public static LayeredState<FileSystemPathComparer, (FileSystemPath?, FileSystemPath?)> Comparer { get; }
             // Some filesystems are case-sensitive, but others are not. Therefore the default is loosen the condition of equality.
-            = new LayeredState<FileSystemPathComparer, (FileSystemPath, FileSystemPath)>(FileSystemPathComparer.CaseInsensitive);
+            = new LayeredState<FileSystemPathComparer, (FileSystemPath?, FileSystemPath?)>(FileSystemPathComparer.CaseInsensitive);
 
         public static LayeredState<Encoding, FileSystemPath> Encoding { get; }
             = new LayeredState<Encoding, FileSystemPath>(new UTF8Encoding(false, true));
 
-        [NotNull]
         [DataMember]
         protected internal string FullName { get; }
 
-        [NotNull]
         public string Name
             => Path.GetFileName(this.FullName);
 
-        [NotNull]
         public string NameWithoutExtension
             => Path.GetFileNameWithoutExtension(Path.GetFileName(this.FullName));
 
-        [NotNull]
         public string Extension
             => Path.GetExtension(this.FullName);
 
         [MustUseReturnValue]
-        public bool ExtensionEquals([CanBeNull] string extension, FileSystemPathComparer comparer = null)
+        public bool ExtensionEquals(string? extension, FileSystemPathComparer? comparer = null)
             => (comparer ?? Comparer.GetValueFor((this, this))).Equals(this.Extension.TrimStart('.'), extension?.TrimStart('.'));
 
         [MustUseReturnValue]
-        public bool IsDescendantOf([NotNull] DirectoryPath directory, FileSystemPathComparer comparer = null)
-            => this.Ancestors.Any(x => x.Equals(directory, comparer));
+        public bool IsDescendantOf(DirectoryPath directory, FileSystemPathComparer? comparer = null)
+        {
+            var c = comparer ?? Comparer.GetValueFor((this, directory));
+            return this.Ancestors.Any(x => x.Equals(directory, c));
+        }
 
-        [NotNull]
         [ItemNotNull]
         public IEnumerable<DirectoryPath> Ancestors
         {
@@ -68,12 +66,10 @@ namespace Mio
             }
         }
 
-        [NotNull]
         public DirectoryPath Parent
             => this.TryGetParent()
                 ?? throw new InvalidOperationException("Root directory does not have parent directory.");
 
-        [NotNull]
         public DirectoryPath Root
             => new DirectoryPath(Path.GetPathRoot(this.FullName));
 
@@ -107,8 +103,7 @@ namespace Mio
             }
         }
 
-        [CanBeNull]
-        public DirectoryPath TryGetParent()
+        public DirectoryPath? TryGetParent()
         {
             var path = Path.GetDirectoryName(this.FullName);
             return path == null

@@ -60,7 +60,7 @@ namespace Mio.Utils
             TValue value = default;
             for (var current = this._value.Value; current != null && value == null; current = current.Parent)
             {
-                if (current.Value == null || current.Condition != null && !current.Condition(conditionArg)) continue;
+                if (current.Value == null || !current.Condition(conditionArg)) continue;
                 value = current.Value;
                 return value;
             }
@@ -68,7 +68,7 @@ namespace Mio.Utils
             return this.FallbackValue;
         }
 
-        public IDisposable BeginWith(TValue value, Func<TConditionArg, bool> condition = null)
+        public IDisposable BeginWith(TValue value, Func<TConditionArg, bool>? condition = null)
         {
             var current = this._value.Value;
             this._value.Value = new Layer(current, value, condition ?? (_ => true));

@@ -21,7 +21,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
 using System;
-using System.Diagnostics;
 
 // ReSharper disable All
 
@@ -29,42 +28,6 @@ using System.Diagnostics;
 
 namespace JetBrains.Annotations
 {
-    /// <summary>
-    /// Indicates that the value of the marked element could be <c>null</c> sometimes,
-    /// so checking for <c>null</c> is required before its usage.
-    /// </summary>
-    /// <example><code>
-    /// [CanBeNull] object Test() => null;
-    ///
-    /// void UseTest() {
-    ///   var p = Test();
-    ///   var s = p.ToString(); // Warning: Possible 'System.NullReferenceException'
-    /// }
-    /// </code></example>
-    [AttributeUsage(
-        AttributeTargets.Method | AttributeTargets.Parameter | AttributeTargets.Property |
-        AttributeTargets.Delegate | AttributeTargets.Field | AttributeTargets.Event |
-        AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.GenericParameter)]
-    internal sealed class CanBeNullAttribute : Attribute
-    {
-    }
-
-    /// <summary>
-    /// Indicates that the value of the marked element can never be <c>null</c>.
-    /// </summary>
-    /// <example><code>
-    /// [NotNull] object Foo() {
-    ///   return null; // Warning: Possible 'null' assignment
-    /// }
-    /// </code></example>
-    [AttributeUsage(
-        AttributeTargets.Method | AttributeTargets.Parameter | AttributeTargets.Property |
-        AttributeTargets.Delegate | AttributeTargets.Field | AttributeTargets.Event |
-        AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.GenericParameter)]
-    internal sealed class NotNullAttribute : Attribute
-    {
-    }
-
     /// <summary>
     /// Can be applied to symbols of types derived from IEnumerable as well as to symbols of Task
     /// and Lazy classes to indicate that the value of a collection item, of the Task.Result property
@@ -129,12 +92,11 @@ namespace JetBrains.Annotations
         /// <param name="formatParameterName">
         /// Specifies which parameter of an annotated method should be treated as the format string
         /// </param>
-        public StringFormatMethodAttribute([NotNull] string formatParameterName)
+        public StringFormatMethodAttribute(string formatParameterName)
         {
             FormatParameterName = formatParameterName;
         }
 
-        [NotNull]
         public string FormatParameterName { get; }
     }
 
@@ -170,13 +132,73 @@ namespace JetBrains.Annotations
         AllowMultiple = true)]
     internal sealed class ValueProviderAttribute : Attribute
     {
-        public ValueProviderAttribute([NotNull] string name)
+        public ValueProviderAttribute(string name)
         {
             Name = name;
         }
 
-        [NotNull]
         public string Name { get; }
+    }
+
+    /// <summary>
+    /// Indicates that the integral value falls into the specified interval.
+    /// It's allowed to specify multiple non-intersecting intervals.
+    /// Values of interval boundaries are inclusive.
+    /// </summary>
+    /// <example><code>
+    /// void Foo([ValueRange(0, 100)] int value) {
+    ///   if (value == -1) { // Warning: Expression is always 'false'
+    ///     ...
+    ///   }
+    /// }
+    /// </code></example>
+    [AttributeUsage(
+        AttributeTargets.Parameter | AttributeTargets.Field | AttributeTargets.Property |
+        AttributeTargets.Method | AttributeTargets.Delegate,
+        AllowMultiple = true)]
+    internal sealed class ValueRangeAttribute : Attribute
+    {
+        public object From { get; }
+        public object To { get; }
+
+        public ValueRangeAttribute(long from, long to)
+        {
+            From = from;
+            To = to;
+        }
+
+        public ValueRangeAttribute(ulong from, ulong to)
+        {
+            From = from;
+            To = to;
+        }
+
+        public ValueRangeAttribute(long value)
+        {
+            From = To = value;
+        }
+
+        public ValueRangeAttribute(ulong value)
+        {
+            From = To = value;
+        }
+    }
+
+    /// <summary>
+    /// Indicates that the integral value never falls below zero.
+    /// </summary>
+    /// <example><code>
+    /// void Foo([NonNegativeValue] int value) {
+    ///   if (value == -1) { // Warning: Expression is always 'false'
+    ///     ...
+    ///   }
+    /// }
+    /// </code></example>
+    [AttributeUsage(
+        AttributeTargets.Parameter | AttributeTargets.Field | AttributeTargets.Property |
+        AttributeTargets.Method | AttributeTargets.Delegate)]
+    internal sealed class NonNegativeValueAttribute : Attribute
+    {
     }
 
     /// <summary>
@@ -242,18 +264,17 @@ namespace JetBrains.Annotations
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     internal sealed class ContractAnnotationAttribute : Attribute
     {
-        public ContractAnnotationAttribute([NotNull] string contract)
+        public ContractAnnotationAttribute(string contract)
             : this(contract, false)
         {
         }
 
-        public ContractAnnotationAttribute([NotNull] string contract, bool forceFullStates)
+        public ContractAnnotationAttribute(string contract, bool forceFullStates)
         {
             Contract = contract;
             ForceFullStates = forceFullStates;
         }
 
-        [NotNull]
         public string Contract { get; }
 
         public bool ForceFullStates { get; }
@@ -299,12 +320,11 @@ namespace JetBrains.Annotations
     [BaseTypeRequired(typeof(Attribute))]
     internal sealed class BaseTypeRequiredAttribute : Attribute
     {
-        public BaseTypeRequiredAttribute([NotNull] Type baseType)
+        public BaseTypeRequiredAttribute(Type baseType)
         {
             BaseType = baseType;
         }
 
-        [NotNull]
         public Type BaseType { get; }
     }
 
@@ -416,28 +436,11 @@ namespace JetBrains.Annotations
         /// <summary>Members of entity marked with attribute are considered used.</summary>
         Members = 2,
 
+        /// <summary> Inherited entities are considered used. </summary>
+        WithInheritors = 4,
+
         /// <summary>Entity marked with attribute and all its members considered used.</summary>
         WithMembers = Itself | Members
-    }
-
-    /// <summary>
-    /// This attribute is intended to mark publicly available API
-    /// which should not be removed and so is treated as used.
-    /// </summary>
-    [MeansImplicitUse(ImplicitUseTargetFlags.WithMembers)]
-    internal sealed class PublicAPIAttribute : Attribute
-    {
-        public PublicAPIAttribute()
-        {
-        }
-
-        public PublicAPIAttribute([NotNull] string comment)
-        {
-            Comment = comment;
-        }
-
-        [CanBeNull]
-        public string Comment { get; }
     }
 
     /// <summary>
@@ -458,7 +461,7 @@ namespace JetBrains.Annotations
     /// [Pure] int Multiply(int x, int y) => x * y;
     ///
     /// void M() {
-    ///   Multiply(123, 42); // Waring: Return value of pure method is not used
+    ///   Multiply(123, 42); // Warning: Return value of pure method is not used
     /// }
     /// </code></example>
     [AttributeUsage(AttributeTargets.Method)]
@@ -484,13 +487,12 @@ namespace JetBrains.Annotations
         {
         }
 
-        public MustUseReturnValueAttribute([NotNull] string justification)
+        public MustUseReturnValueAttribute(string justification)
         {
             Justification = justification;
         }
 
-        [CanBeNull]
-        public string Justification { get; }
+        public string? Justification { get; }
     }
 
     /// <summary>
@@ -513,92 +515,6 @@ namespace JetBrains.Annotations
         AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct | AttributeTargets.GenericParameter)]
     internal sealed class ProvidesContextAttribute : Attribute
     {
-    }
-
-    /// <summary>
-    /// An extension method marked with this attribute is processed by code completion
-    /// as a 'Source Template'. When the extension method is completed over some expression, its source code
-    /// is automatically expanded like a template at call site.
-    /// </summary>
-    /// <remarks>
-    /// Template method body can contain valid source code and/or special comments starting with '$'.
-    /// Text inside these comments is added as source code when the template is applied. Template parameters
-    /// can be used either as additional method parameters or as identifiers wrapped in two '$' signs.
-    /// Use the <see cref="MacroAttribute"/> attribute to specify macros for parameters.
-    /// </remarks>
-    /// <example>
-    /// In this example, the 'forEach' method is a source template available over all values
-    /// of enumerable types, producing ordinary C# 'foreach' statement and placing caret inside block:
-    /// <code>
-    /// [SourceTemplate]
-    /// public static void forEach&lt;T&gt;(this IEnumerable&lt;T&gt; xs) {
-    ///   foreach (var x in xs) {
-    ///      //$ $END$
-    ///   }
-    /// }
-    /// </code>
-    /// </example>
-    [AttributeUsage(AttributeTargets.Method)]
-    [Conditional("DEBUG")]
-    internal sealed class SourceTemplateAttribute : Attribute
-    {
-    }
-
-    /// <summary>
-    /// Allows specifying a macro for a parameter of a <see cref="SourceTemplateAttribute">source template</see>.
-    /// </summary>
-    /// <remarks>
-    /// You can apply the attribute on the whole method or on any of its additional parameters. The macro expression
-    /// is defined in the <see cref="MacroAttribute.Expression"/> property. When applied on a method, the target
-    /// template parameter is defined in the <see cref="MacroAttribute.Target"/> property. To apply the macro silently
-    /// for the parameter, set the <see cref="MacroAttribute.Editable"/> property value = -1.
-    /// </remarks>
-    /// <example>
-    /// Applying the attribute on a source template method:
-    /// <code>
-    /// [SourceTemplate, Macro(Target = "item", Expression = "suggestVariableName()")]
-    /// public static void forEach&lt;T&gt;(this IEnumerable&lt;T&gt; collection) {
-    ///   foreach (var item in collection) {
-    ///     //$ $END$
-    ///   }
-    /// }
-    /// </code>
-    /// Applying the attribute on a template method parameter:
-    /// <code>
-    /// [SourceTemplate]
-    /// public static void something(this Entity x, [Macro(Expression = "guid()", Editable = -1)] string newguid) {
-    ///   /*$ var $x$Id = "$newguid$" + x.ToString();
-    ///   x.DoSomething($x$Id); */
-    /// }
-    /// </code>
-    /// </example>
-    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method, AllowMultiple = true)]
-    [Conditional("DEBUG")]
-    internal sealed class MacroAttribute : Attribute
-    {
-        /// <summary>
-        /// Allows specifying a macro that will be executed for a <see cref="SourceTemplateAttribute">source template</see>
-        /// parameter when the template is expanded.
-        /// </summary>
-        [CanBeNull]
-        public string Expression { get; set; }
-
-        /// <summary>
-        /// Allows specifying which occurrence of the target parameter becomes editable when the template is deployed.
-        /// </summary>
-        /// <remarks>
-        /// If the target parameter is used several times in the template, only one occurrence becomes editable;
-        /// other occurrences are changed synchronously. To specify the zero-based index of the editable occurrence,
-        /// use values >= 0. To make the parameter non-editable when the template is expanded, use -1.
-        /// </remarks>
-        public int Editable { get; set; }
-
-        /// <summary>
-        /// Identifies the target parameter of a <see cref="SourceTemplateAttribute">source template</see> if the
-        /// <see cref="MacroAttribute"/> is applied on a template method.
-        /// </summary>
-        [CanBeNull]
-        public string Target { get; set; }
     }
 
     /// <summary>
@@ -738,7 +654,7 @@ namespace JetBrains.Annotations
     /// <summary>
     /// Indicates that the marked parameter is a regular expression pattern.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter)]
+    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Field | AttributeTargets.Property)]
     internal sealed class RegexPatternAttribute : Attribute
     {
     }

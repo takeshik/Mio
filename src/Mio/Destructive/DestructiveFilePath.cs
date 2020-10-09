@@ -17,11 +17,10 @@ namespace Mio.Destructive
 {
     public sealed class DestructiveFilePath : FilePath
     {
-        [NotNull]
         public new string FullName
             => base.FullName;
 
-        public DestructiveFilePath([NotNull] string path)
+        public DestructiveFilePath(string path)
             : base(path)
         {
         }
@@ -31,7 +30,6 @@ namespace Mio.Destructive
         {
         }
 
-        [NotNull]
         public static DestructiveFilePath CreateTempFile()
             => new DestructiveFilePath(Path.GetTempFileName());
 
@@ -40,12 +38,10 @@ namespace Mio.Destructive
             => "<DestructiveFile: " + this.FullName + ">";
 
         [Pure]
-        [NotNull]
         public Uri ToUri()
             => new Uri(this.FullName);
 
-        [CanBeNull]
-        public new DestructiveFilePath NullIfNotExists()
+        public new DestructiveFilePath? NullIfNotExists()
             => this.Exists() ? this : null;
 
         public void SetAttributes(FileAttributes attributes)
@@ -80,10 +76,10 @@ namespace Mio.Destructive
             }
         }
 
-        public void MoveTo([NotNull] DestructiveFilePath destination)
+        public void MoveTo(DestructiveFilePath destination)
             => F.Move(this.FullName, destination.FullName);
 
-        public void Append([NotNull] byte[] bytes)
+        public void Append(byte[] bytes)
         {
             using (var fs = this.Open(FileMode.Append, FileAccess.Write))
             {
@@ -92,26 +88,25 @@ namespace Mio.Destructive
             }
         }
 
-        public void Append([NotNull] IEnumerable<string> contents, Encoding encoding = null)
+        public void Append(IEnumerable<string> contents, Encoding? encoding = null)
             => F.AppendAllLines(this.FullName, contents, encoding ?? Encoding.GetValueFor(this));
 
-        public void Append([NotNull] string contents, Encoding encoding = null)
+        public void Append(string contents, Encoding? encoding = null)
             => F.AppendAllText(this.FullName, contents, encoding ?? Encoding.GetValueFor(this));
 
-        public void Write([NotNull] byte[] bytes)
+        public void Write(byte[] bytes)
             => F.WriteAllBytes(this.FullName, bytes);
 
-        public void Write([NotNull] IEnumerable<string> contents, Encoding encoding = null)
+        public void Write(IEnumerable<string> contents, Encoding? encoding = null)
             => F.WriteAllLines(this.FullName, contents, encoding ?? Encoding.GetValueFor(this));
 
-        public void Write([NotNull] string[] contents, Encoding encoding = null)
+        public void Write(string[] contents, Encoding? encoding = null)
             => F.WriteAllLines(this.FullName, contents, encoding ?? Encoding.GetValueFor(this));
 
-        public void Write([NotNull] string contents, Encoding encoding = null)
+        public void Write(string contents, Encoding? encoding = null)
             => F.WriteAllText(this.FullName, contents, encoding ?? Encoding.GetValueFor(this));
 
-        [NotNull]
-        public Task AppendAsync([NotNull] byte[] bytes,
+        public Task AppendAsync(byte[] bytes,
             CancellationToken cancellationToken = default)
         {
             if (cancellationToken.IsCancellationRequested)
@@ -131,9 +126,8 @@ namespace Mio.Destructive
             return Core();
         }
 
-        [NotNull]
-        public Task AppendAsync([NotNull] IEnumerable<string> contents,
-            Encoding encoding = null,
+        public Task AppendAsync(IEnumerable<string> contents,
+            Encoding? encoding = null,
             CancellationToken cancellationToken = default)
         {
 #if NETCOREAPP2_1
@@ -163,9 +157,8 @@ namespace Mio.Destructive
 #endif
         }
 
-        [NotNull]
-        public Task AppendAsync([NotNull] string contents,
-            Encoding encoding = null,
+        public Task AppendAsync(string contents,
+            Encoding? encoding = null,
             CancellationToken cancellationToken = default)
         {
 #if NETCOREAPP2_1
@@ -192,8 +185,7 @@ namespace Mio.Destructive
 #endif
         }
 
-        [NotNull]
-        public Task WriteAsync([NotNull] byte[] bytes,
+        public Task WriteAsync(byte[] bytes,
             CancellationToken cancellationToken = default)
         {
 #if NETCOREAPP2_1
@@ -217,9 +209,8 @@ namespace Mio.Destructive
 #endif
         }
 
-        [NotNull]
-        public Task WriteAsync([NotNull] IEnumerable<string> contents,
-            Encoding encoding = null,
+        public Task WriteAsync(IEnumerable<string> contents,
+            Encoding? encoding = null,
             CancellationToken cancellationToken = default)
         {
 #if NETCOREAPP2_1
@@ -249,9 +240,8 @@ namespace Mio.Destructive
 #endif
         }
 
-        [NotNull]
-        public Task WriteAsync([NotNull] string contents,
-            Encoding encoding = null,
+        public Task WriteAsync(string contents,
+            Encoding? encoding = null,
             CancellationToken cancellationToken = default)
         {
 #if NETCOREAPP2_1
@@ -278,22 +268,19 @@ namespace Mio.Destructive
 #endif
         }
 
-        [NotNull]
         public FileStream Create(
             FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
             => new FileStream(this.FullName, FileMode.Create, FileAccess.ReadWrite, share, bufferSize, options);
 
-        [NotNull]
         public StreamWriter CreateText(
-            Encoding encoding = null,
+            Encoding? encoding = null,
             FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
             => new StreamWriter(new FileStream(this.FullName, FileMode.Create, FileAccess.ReadWrite, share, bufferSize, options), encoding ?? Encoding.GetValueFor(this));
 
-        [NotNull]
         public FileStream Open(
             FileMode mode = FileMode.OpenOrCreate,
             FileAccess access = FileAccess.ReadWrite,
@@ -302,16 +289,14 @@ namespace Mio.Destructive
             FileOptions options = FileOptions.Asynchronous)
             => new FileStream(this.FullName, mode, access, share, bufferSize, options);
 
-        [NotNull]
         public FileStream OpenWrite(
             FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
             => new FileStream(this.FullName, FileMode.OpenOrCreate, FileAccess.Write, share, bufferSize, options);
 
-        [NotNull]
         public StreamWriter OpenWriteText(
-            Encoding encoding = null,
+            Encoding? encoding = null,
             FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)

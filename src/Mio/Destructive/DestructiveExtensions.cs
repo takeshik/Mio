@@ -11,13 +11,11 @@ namespace Mio.Destructive
     public static class DestructiveExtensions
     {
         [Pure]
-        [NotNull]
-        public static DestructiveFilePath AsDestructive([NotNull] this FilePath file)
+        public static DestructiveFilePath AsDestructive(this FilePath file)
             => file.CreateDestructive();
 
         [Pure]
-        [NotNull]
-        public static DestructiveDirectoryPath AsDestructive([NotNull] this DirectoryPath directory)
+        public static DestructiveDirectoryPath AsDestructive(this DirectoryPath directory)
             => directory.CreateDestructive();
     }
 }

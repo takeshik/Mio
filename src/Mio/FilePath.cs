@@ -18,7 +18,7 @@ namespace Mio
 {
     public class FilePath : FileSystemPath, IEquatable<FilePath>
     {
-        public FilePath([NotNull] string path)
+        public FilePath(string path)
             : base(path, true)
         {
         }
@@ -29,15 +29,15 @@ namespace Mio
         }
 
         [Pure]
-        public static bool operator ==([CanBeNull] FilePath x, [CanBeNull] FilePath y)
+        public static bool operator ==(FilePath? x, FilePath? y)
             => Equals(x, y);
 
         [Pure]
-        public static bool operator !=([CanBeNull] FilePath x, [CanBeNull] FilePath y)
+        public static bool operator !=(FilePath? x, FilePath? y)
             => !Equals(x, y);
 
         [Pure]
-        public static bool Equals([CanBeNull] FilePath x, [CanBeNull] FilePath y, FileSystemPathComparer comparer = null)
+        public static bool Equals(FilePath? x, FilePath? y, FileSystemPathComparer? comparer = null)
             => (comparer ?? Comparer.GetValueFor((x, y))).Equals(x, y);
 
         [Pure]
@@ -45,7 +45,7 @@ namespace Mio
             => Equals(this, other);
 
         [Pure]
-        public bool Equals([CanBeNull] FilePath other, [NotNull] FileSystemPathComparer comparer)
+        public bool Equals(FilePath? other, FileSystemPathComparer comparer)
             => Equals(this, other, comparer);
 
         [Pure]
@@ -72,14 +72,12 @@ namespace Mio
         public override DateTimeOffset GetLastWriteTime()
             => new DateTimeOffset(F.GetLastWriteTime(this.FullName));
 
-        [CanBeNull]
         [MustUseReturnValue]
-        public FilePath NullIfNotExists()
+        public FilePath? NullIfNotExists()
             => this.Exists() ? this : null;
 
         [Pure]
-        [NotNull]
-        public FilePath WithExtension([CanBeNull] string extension)
+        public FilePath WithExtension(string? extension)
             => new FilePath(Path.ChangeExtension(this.FullName, extension), false);
 
         [MustUseReturnValue]
@@ -90,25 +88,20 @@ namespace Mio
         public int GetSize()
             => checked((int)this.GetSize64());
 
-        [NotNull]
         public byte[] ReadAllBytes()
             => F.ReadAllBytes(this.FullName);
 
-        [NotNull]
         [ItemNotNull]
-        public string[] ReadAllLines(Encoding encoding = null)
+        public string[] ReadAllLines(Encoding? encoding = null)
             => F.ReadAllLines(this.FullName, encoding ?? Encoding.GetValueFor(this));
 
-        [NotNull]
-        public string ReadAllText(Encoding encoding = null)
+        public string ReadAllText(Encoding? encoding = null)
             => F.ReadAllText(this.FullName, encoding ?? Encoding.GetValueFor(this));
 
-        [NotNull]
         [ItemNotNull]
-        public IEnumerable<string> ReadLines(Encoding encoding = null)
+        public IEnumerable<string> ReadLines(Encoding? encoding = null)
             => F.ReadLines(this.FullName, encoding ?? Encoding.GetValueFor(this));
 
-        [NotNull]
         [ItemNotNull]
         public Task<byte[]> ReadAllBytesAsync(CancellationToken cancellationToken = default)
         {
@@ -134,9 +127,8 @@ namespace Mio
 #endif
         }
 
-        [NotNull]
         [ItemNotNull]
-        public Task<string[]> ReadAllLinesAsync(Encoding encoding = null, CancellationToken cancellationToken = default)
+        public Task<string[]> ReadAllLinesAsync(Encoding? encoding = null, CancellationToken cancellationToken = default)
         {
 #if NETCOREAPP2_1
             return F.ReadAllLinesAsync(this.FullName, encoding ?? Encoding.GetValueFor(this), cancellationToken);
@@ -166,9 +158,8 @@ namespace Mio
 #endif
         }
 
-        [NotNull]
         [ItemNotNull]
-        public Task<string> ReadAllTextAsync(Encoding encoding = null, CancellationToken cancellationToken = default)
+        public Task<string> ReadAllTextAsync(Encoding? encoding = null, CancellationToken cancellationToken = default)
         {
 #if NETCOREAPP2_1
             return F.ReadAllTextAsync(this.FullName, encoding ?? Encoding.GetValueFor(this), cancellationToken);
@@ -186,29 +177,26 @@ namespace Mio
 #endif
         }
 
-        [NotNull]
         public FileStream OpenRead(
             FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
             => new FileStream(this.FullName, FileMode.Open, FileAccess.Read, share, bufferSize, options);
 
-        [NotNull]
         public StreamReader OpenReadText(
-            Encoding encoding = null,
+            Encoding? encoding = null,
             FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
             => new StreamReader(new FileStream(this.FullName, FileMode.Open, FileAccess.Read, share, bufferSize, options), encoding ?? Encoding.GetValueFor(this));
 
-        public void CopyTo([NotNull] DestructiveFilePath destination)
+        public void CopyTo(DestructiveFilePath destination)
             => F.Copy(this.FullName, destination.FullName, true);
 
-        public void Replace([NotNull] DestructiveFilePath destination, DestructiveFilePath destinationBackup)
+        public void Replace(DestructiveFilePath destination, DestructiveFilePath destinationBackup)
             => F.Replace(this.FullName, destination.FullName, destinationBackup.FullName);
 
         [Pure]
-        [NotNull]
         internal DestructiveFilePath CreateDestructive()
             => new DestructiveFilePath(this.FullName, false);
     }

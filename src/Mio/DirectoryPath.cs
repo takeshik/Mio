@@ -22,7 +22,7 @@ namespace Mio
     {
         private const string _defaultSearchPattern = "*";
 
-        public DirectoryPath([NotNull] string path)
+        public DirectoryPath(string path)
             : base(path, true)
         {
         }
@@ -33,30 +33,27 @@ namespace Mio
         }
 
         [Pure]
-        public static bool operator ==([CanBeNull] DirectoryPath x, [CanBeNull] DirectoryPath y)
+        public static bool operator ==(DirectoryPath? x, DirectoryPath? y)
             => Equals(x, y);
 
         [Pure]
-        public static bool operator !=([CanBeNull] DirectoryPath x, [CanBeNull] DirectoryPath y)
+        public static bool operator !=(DirectoryPath? x, DirectoryPath? y)
             => !Equals(x, y);
 
-        [NotNull]
         [MustUseReturnValue]
         public static DirectoryPath GetTempDirectory()
             => new DirectoryPath(Path.GetTempPath());
 
-        [NotNull]
         [MustUseReturnValue]
         public static DirectoryPath GetCurrentDirectory()
             => new DirectoryPath(D.GetCurrentDirectory());
 
-        [NotNull]
         [MustUseReturnValue]
         public static IReadOnlyList<DirectoryPath> GetRootDirectories()
             => Array.ConvertAll(D.GetLogicalDrives(), x => new DirectoryPath(x, false));
 
         [Pure]
-        public static bool Equals([CanBeNull] DirectoryPath x, [CanBeNull] DirectoryPath y, FileSystemPathComparer comparer = null)
+        public static bool Equals(DirectoryPath? x, DirectoryPath? y, FileSystemPathComparer? comparer = null)
             => (comparer ?? Comparer.GetValueFor((x, y))).Equals(x, y);
 
         [Pure]
@@ -68,7 +65,7 @@ namespace Mio
             => obj is DirectoryPath file && this.Equals(file);
 
         [Pure]
-        public bool Equals([CanBeNull] DirectoryPath other, [NotNull] FileSystemPathComparer comparer)
+        public bool Equals(DirectoryPath? other, FileSystemPathComparer? comparer)
             => Equals(this, other, comparer);
 
         [Pure]
@@ -91,78 +88,65 @@ namespace Mio
         public override DateTimeOffset GetLastWriteTime()
             => new DateTimeOffset(D.GetLastWriteTime(this.FullName));
 
-        [CanBeNull]
         [MustUseReturnValue]
-        public DirectoryPath NullIfNotExists()
+        public DirectoryPath? NullIfNotExists()
             => this.Exists() ? this : null;
 
         [Pure]
-        [NotNull]
-        public DirectoryPath WithExtension([CanBeNull] string extension)
+        public DirectoryPath WithExtension(string? extension)
             => new DirectoryPath(Path.ChangeExtension(this.FullName, extension), false);
 
         [Pure]
-        [NotNull]
-        public FilePath ChildFile([NotNull] string path)
+        public FilePath ChildFile(string path)
             => new FilePath(Path.Combine(this.FullName, path));
 
         [Pure]
-        [NotNull]
-        public DirectoryPath ChildDirectory([NotNull] string path)
+        public DirectoryPath ChildDirectory(string path)
             => new DirectoryPath(Path.Combine(this.FullName, path));
 
-        [NotNull]
         public FilePath RandomNamedChildFile(string prefix = "", string suffix = "")
             => this.ChildFile(prefix + Path.GetRandomFileName() + suffix);
 
-        [NotNull]
         public DirectoryPath RandomNamedChildDirectory(string prefix = "", string suffix = "")
             => this.ChildDirectory(prefix + Path.GetRandomFileName() + suffix);
 
-        [NotNull]
         [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<FilePath> EnumerateFiles(string searchPattern = _defaultSearchPattern)
             => D.EnumerateFiles(this.FullName, searchPattern).Select(x => new FilePath(x, false));
 
-        [NotNull]
         [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<FilePath> EnumerateAllFiles(string searchPattern = _defaultSearchPattern)
             => D.EnumerateFiles(this.FullName, searchPattern, SearchOption.AllDirectories).Select(x => new FilePath(x, false));
 
-        [NotNull]
         [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<DirectoryPath> EnumerateDirectories(string searchPattern = _defaultSearchPattern)
             => D.EnumerateDirectories(this.FullName, searchPattern).Select(x => new DirectoryPath(x, false));
 
-        [NotNull]
         [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<DirectoryPath> EnumerateAllDirectories(string searchPattern = _defaultSearchPattern)
             => D.EnumerateDirectories(this.FullName, searchPattern, SearchOption.AllDirectories).Select(x => new DirectoryPath(x, false));
 
-        [NotNull]
         [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<FileSystemPath> EnumerateEntries(string searchPattern = _defaultSearchPattern)
             => D.EnumerateDirectories(this.FullName, searchPattern).Select(x => (FileSystemPath)new DirectoryPath(x, false))
                 .Concat(D.EnumerateFiles(this.FullName, searchPattern).Select(x => (FileSystemPath)new FilePath(x, false)));
 
-        [NotNull]
         [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<FileSystemPath> EnumerateAllEntries(string searchPattern = _defaultSearchPattern)
             => D.EnumerateDirectories(this.FullName, searchPattern, SearchOption.AllDirectories).Select(x => (FileSystemPath)new DirectoryPath(x, false))
                 .Concat(D.EnumerateFiles(this.FullName, searchPattern, SearchOption.AllDirectories).Select(x => (FileSystemPath)new FilePath(x, false)));
 
-        [NotNull]
         [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<FileSystemPath> SafeEnumerateEntries(
             FileAttributes attributesToSkip = default,
-            Func<DirectoryPath, bool> recursionPredicate = null)
+            Func<DirectoryPath, bool>? recursionPredicate = null)
         {
 #if NETCOREAPP2_1
             return new FileSystemEnumerable<FileSystemPath>(
@@ -181,8 +165,10 @@ namespace Mio
             )
             {
                 ShouldRecursePredicate = recursionPredicate == null
-                    ? (FileSystemEnumerable<FileSystemPath>.FindPredicate) null
+                    ? (FileSystemEnumerable<FileSystemPath>.FindPredicate)((ref FileSystemEntry x) => true)
+#pragma warning disable CS8602
                     : (ref FileSystemEntry x) => recursionPredicate(new DirectoryPath(x.ToFullPath())),
+#pragma warning restore CS8602
             };
 #else
             IEnumerable<FileSystemPath> Core(string origin)
@@ -244,14 +230,13 @@ namespace Mio
 #endif
         }
 
-        [NotNull]
         public DirectoryPath EnsureCreated()
         {
             D.CreateDirectory(this.FullName);
             return this;
         }
 
-        public void CopyTo([NotNull] DestructiveDirectoryPath destination)
+        public void CopyTo(DestructiveDirectoryPath destination)
         {
             foreach (var file in this.EnumerateFiles())
             {
@@ -265,7 +250,6 @@ namespace Mio
         }
 
         [Pure]
-        [NotNull]
         internal DestructiveDirectoryPath CreateDestructive()
             => new DestructiveDirectoryPath(this.FullName, false);
     }

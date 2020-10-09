@@ -11,12 +11,11 @@ namespace Mio
 {
     partial class FileSystemPath
     {
-        private static readonly Type _hyperlinqType = Type.GetType("LINQPad.Hyperlinq, LINQPad.Runtime")
+        private static readonly Type? _hyperlinqType = Type.GetType("LINQPad.Hyperlinq, LINQPad.Runtime")
             // LINQPad 5 or below
             ?? Type.GetType("LINQPad.Hyperlinq, LINQPad");
 
         [UsedImplicitly]
-        [NotNull]
         private protected object ToDump()
             => _hyperlinqType == null
                 ? this.ToString()
