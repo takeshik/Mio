@@ -105,76 +105,19 @@ namespace Mio
         [ItemNotNull]
         public Task<byte[]> ReadAllBytesAsync(CancellationToken cancellationToken = default)
         {
-#if NETCOREAPP2_1
             return F.ReadAllBytesAsync(this.FullName, cancellationToken);
-#else
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled<byte[]>(cancellationToken);
-            }
-
-            async Task<byte[]> Core()
-            {
-                using (var fs = this.OpenRead())
-                {
-                    var buf = new byte[fs.Length];
-                    await fs.ReadAsync(buf, 0, buf.Length, cancellationToken).ConfigureAwait(false);
-                    return buf;
-                }
-            }
-
-            return Core();
-#endif
         }
 
         [ItemNotNull]
         public Task<string[]> ReadAllLinesAsync(Encoding? encoding = null, CancellationToken cancellationToken = default)
         {
-#if NETCOREAPP2_1
             return F.ReadAllLinesAsync(this.FullName, encoding ?? Encoding.GetValueFor(this), cancellationToken);
-#else
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled<string[]>(cancellationToken);
-            }
-
-            async Task<string[]> Core()
-            {
-                var lines = new List<string>();
-                using (var sr = this.OpenReadText(encoding ?? Encoding.GetValueFor(this)))
-                {
-                    string str;
-                    while ((str = await sr.ReadLineAsync().ConfigureAwait(false)) != null)
-                    {
-                        lines.Add(str);
-                        cancellationToken.ThrowIfCancellationRequested();
-                    }
-                }
-
-                return lines.ToArray();
-            }
-
-            return Core();
-#endif
         }
 
         [ItemNotNull]
         public Task<string> ReadAllTextAsync(Encoding? encoding = null, CancellationToken cancellationToken = default)
         {
-#if NETCOREAPP2_1
             return F.ReadAllTextAsync(this.FullName, encoding ?? Encoding.GetValueFor(this), cancellationToken);
-#else
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled<string>(cancellationToken);
-            }
-
-            using (var sr = this.OpenReadText(encoding ?? Encoding.GetValueFor(this)))
-            using (cancellationToken.Register(x => ((StreamReader)x).Dispose(), sr, false))
-            {
-                return sr.ReadToEndAsync();
-            }
-#endif
         }
 
         public FileStream OpenRead(

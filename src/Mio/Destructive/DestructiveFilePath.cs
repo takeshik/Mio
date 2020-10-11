@@ -130,142 +130,34 @@ namespace Mio.Destructive
             Encoding? encoding = null,
             CancellationToken cancellationToken = default)
         {
-#if NETCOREAPP2_1
             return F.AppendAllLinesAsync(this.FullName, contents, encoding ?? Encoding.GetValueFor(this), cancellationToken);
-#else
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled(cancellationToken);
-            }
-
-            async Task Core()
-            {
-                using (var fs = this.Open(FileMode.Append, FileAccess.Write))
-                using (var sw = new StreamWriter(fs, encoding ?? Encoding.GetValueFor(this)))
-                {
-                    foreach (var content in contents)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        await sw.WriteLineAsync(content).ConfigureAwait(false);
-                    }
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await sw.FlushAsync().ConfigureAwait(false);
-                }
-            }
-
-            return Core();
-#endif
         }
 
         public Task AppendAsync(string contents,
             Encoding? encoding = null,
             CancellationToken cancellationToken = default)
         {
-#if NETCOREAPP2_1
             return F.AppendAllTextAsync(this.FullName, contents, encoding ?? Encoding.GetValueFor(this), cancellationToken);
-#else
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled(cancellationToken);
-            }
-
-            async Task Core()
-            {
-                using (var fs = this.Open(FileMode.Append, FileAccess.Write))
-                using (var sw = new StreamWriter(fs, encoding ?? Encoding.GetValueFor(this)))
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await sw.WriteAsync(contents).ConfigureAwait(false);
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await sw.FlushAsync().ConfigureAwait(false);
-                }
-            }
-
-            return Core();
-#endif
         }
 
         public Task WriteAsync(byte[] bytes,
             CancellationToken cancellationToken = default)
         {
-#if NETCOREAPP2_1
             return F.WriteAllBytesAsync(this.FullName, bytes, cancellationToken);
-#else
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled(cancellationToken);
-            }
-
-            async Task Core()
-            {
-                using (var fs = this.Open(FileMode.Create, FileAccess.Write))
-                {
-                    await fs.WriteAsync(bytes, 0, bytes.Length, cancellationToken);
-                    await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
-                }
-            }
-
-            return Core();
-#endif
         }
 
         public Task WriteAsync(IEnumerable<string> contents,
             Encoding? encoding = null,
             CancellationToken cancellationToken = default)
         {
-#if NETCOREAPP2_1
             return F.WriteAllLinesAsync(this.FullName, contents, encoding ?? Encoding.GetValueFor(this), cancellationToken);
-#else
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled(cancellationToken);
-            }
-
-            async Task Core()
-            {
-                using (var fs = this.Open(FileMode.Create, FileAccess.Write))
-                using (var sw = new StreamWriter(fs, encoding ?? Encoding.GetValueFor(this)))
-                {
-                    foreach (var content in contents)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        await sw.WriteLineAsync(content).ConfigureAwait(false);
-                    }
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await sw.FlushAsync().ConfigureAwait(false);
-                }
-            }
-
-            return Core();
-#endif
         }
 
         public Task WriteAsync(string contents,
             Encoding? encoding = null,
             CancellationToken cancellationToken = default)
         {
-#if NETCOREAPP2_1
             return F.WriteAllTextAsync(this.FullName, contents, encoding ?? Encoding.GetValueFor(this), cancellationToken);
-#else
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled(cancellationToken);
-            }
-
-            async Task Core()
-            {
-                using (var fs = this.Open(FileMode.Create, FileAccess.Write))
-                using (var sw = new StreamWriter(fs, encoding ?? Encoding.GetValueFor(this)))
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await sw.WriteAsync(contents).ConfigureAwait(false);
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await sw.FlushAsync().ConfigureAwait(false);
-                }
-            }
-
-            return Core();
-#endif
         }
 
         public FileStream Create(
