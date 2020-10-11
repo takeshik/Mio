@@ -142,6 +142,33 @@ namespace Mio
 
         [ItemNotNull]
         [MustUseReturnValue]
+        public IEnumerable<FileSystemPath> EnumerateEntries(
+            Func<FileSystemPath, bool>? shouldIncludePredicate,
+            Func<FileSystemPath, bool>? shouldRecursePredicate = null,
+            EnumerationOptions? enumerationOptions = null)
+        {
+            static FileSystemPath CreatePath(ref FileSystemEntry entry)
+                => entry.IsDirectory
+                    ? (FileSystemPath) new DirectoryPath(entry.ToFullPath())
+                    : new FilePath(entry.ToFullPath());
+
+            return new FileSystemEnumerable<FileSystemPath>(this.FullName, CreatePath, enumerationOptions)
+            {
+                ShouldIncludePredicate = shouldIncludePredicate == null
+                    ? (FileSystemEnumerable<FileSystemPath>.FindPredicate)((ref FileSystemEntry x) => true)
+#pragma warning disable CS8602
+                    : (ref FileSystemEntry x) => shouldIncludePredicate(CreatePath(ref x)),
+#pragma warning restore CS8602
+                ShouldRecursePredicate = shouldRecursePredicate == null
+                    ? (FileSystemEnumerable<FileSystemPath>.FindPredicate)((ref FileSystemEntry x) => true)
+#pragma warning disable CS8602
+                    : (ref FileSystemEntry x) => shouldRecursePredicate(CreatePath(ref x))
+#pragma warning restore CS8602
+            };
+        }
+
+        [ItemNotNull]
+        [MustUseReturnValue]
         public IEnumerable<FileSystemPath> SafeEnumerateEntries(
             FileAttributes attributesToSkip = default,
             Func<DirectoryPath, bool>? recursionPredicate = null)

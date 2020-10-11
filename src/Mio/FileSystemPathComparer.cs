@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO.Enumeration;
 
 namespace Mio
 {
@@ -18,6 +19,8 @@ namespace Mio
         public abstract int GetHashCode(DirectoryPath obj);
 
         protected internal abstract bool Equals(string? x, string? y);
+
+        protected internal abstract bool Matches(string? input, string? pattern);
 
         public bool Equals(FilePath? x, FilePath? y)
         {
@@ -45,6 +48,9 @@ namespace Mio
 
             protected internal override bool Equals(string? x, string? y)
                 => x == y;
+
+            protected internal override bool Matches(string? input, string? pattern)
+                => FileSystemName.MatchesSimpleExpression(pattern, input, false);
         }
 
         private sealed class CaseInsensitiveImpl : FileSystemPathComparer
@@ -57,6 +63,9 @@ namespace Mio
 
             protected internal override bool Equals(string? x, string? y)
                 => string.Equals(x, y, StringComparison.OrdinalIgnoreCase);
+
+            protected internal override bool Matches(string? input, string? pattern)
+                => FileSystemName.MatchesSimpleExpression(pattern, input);
         }
 
         public static FileSystemPathComparer CaseSensitive { get; } = new CaseSensitiveImpl();
