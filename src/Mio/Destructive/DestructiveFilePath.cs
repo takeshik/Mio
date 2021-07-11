@@ -114,7 +114,7 @@ namespace Mio.Destructive
 
             async Task Core()
             {
-                using var fs = this.Open(FileMode.Append, FileAccess.Write);
+                await using var fs = this.Open(FileMode.Append, FileAccess.Write);
                 await fs.WriteAsync(bytes, 0, bytes.Length, cancellationToken);
                 await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
             }
