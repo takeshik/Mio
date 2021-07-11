@@ -55,11 +55,11 @@ namespace Mio
             => (comparer ?? Comparer.GetValueFor((x, y))).Equals(x, y);
 
         [Pure]
-        public bool Equals(DirectoryPath other)
+        public bool Equals(DirectoryPath? other)
             => Equals(this, other);
 
         [Pure]
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => obj is DirectoryPath file && this.Equals(file);
 
         [Pure]
@@ -108,39 +108,32 @@ namespace Mio
         public DirectoryPath RandomNamedChildDirectory(string prefix = "", string suffix = "")
             => this.ChildDirectory(prefix + Path.GetRandomFileName() + suffix);
 
-        [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<FilePath> EnumerateFiles(string searchPattern = _defaultSearchPattern)
             => D.EnumerateFiles(this.FullName, searchPattern).Select(x => new FilePath(x, false));
 
-        [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<FilePath> EnumerateAllFiles(string searchPattern = _defaultSearchPattern)
             => D.EnumerateFiles(this.FullName, searchPattern, SearchOption.AllDirectories).Select(x => new FilePath(x, false));
 
-        [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<DirectoryPath> EnumerateDirectories(string searchPattern = _defaultSearchPattern)
             => D.EnumerateDirectories(this.FullName, searchPattern).Select(x => new DirectoryPath(x, false));
 
-        [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<DirectoryPath> EnumerateAllDirectories(string searchPattern = _defaultSearchPattern)
             => D.EnumerateDirectories(this.FullName, searchPattern, SearchOption.AllDirectories).Select(x => new DirectoryPath(x, false));
 
-        [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<FileSystemPath> EnumerateEntries(string searchPattern = _defaultSearchPattern)
             => D.EnumerateDirectories(this.FullName, searchPattern).Select(x => (FileSystemPath)new DirectoryPath(x, false))
                 .Concat(D.EnumerateFiles(this.FullName, searchPattern).Select(x => (FileSystemPath)new FilePath(x, false)));
 
-        [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<FileSystemPath> EnumerateAllEntries(string searchPattern = _defaultSearchPattern)
             => D.EnumerateDirectories(this.FullName, searchPattern, SearchOption.AllDirectories).Select(x => (FileSystemPath)new DirectoryPath(x, false))
                 .Concat(D.EnumerateFiles(this.FullName, searchPattern, SearchOption.AllDirectories).Select(x => (FileSystemPath)new FilePath(x, false)));
 
-        [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<FileSystemPath> EnumerateEntries(
             Func<FileSystemPath, bool>? shouldIncludePredicate,
@@ -167,7 +160,6 @@ namespace Mio
             };
         }
 
-        [ItemNotNull]
         [MustUseReturnValue]
         public IEnumerable<FileSystemPath> SafeEnumerateEntries(
             FileAttributes attributesToSkip = default,

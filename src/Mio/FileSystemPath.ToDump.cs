@@ -16,7 +16,7 @@ namespace Mio
             ?? Type.GetType("LINQPad.Hyperlinq, LINQPad");
 
         [UsedImplicitly]
-        private protected object ToDump()
+        private protected object? ToDump()
             => _hyperlinqType == null
                 ? this.ToString()
                 : Activator.CreateInstance(_hyperlinqType, this.FullName, this.ToString());

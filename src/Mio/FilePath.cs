@@ -41,7 +41,7 @@ namespace Mio
             => (comparer ?? Comparer.GetValueFor((x, y))).Equals(x, y);
 
         [Pure]
-        public bool Equals(FilePath other)
+        public bool Equals(FilePath? other)
             => Equals(this, other);
 
         [Pure]
@@ -49,7 +49,7 @@ namespace Mio
             => Equals(this, other, comparer);
 
         [Pure]
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => obj is FilePath file && this.Equals(file);
 
         [Pure]
@@ -91,30 +91,25 @@ namespace Mio
         public byte[] ReadAllBytes()
             => F.ReadAllBytes(this.FullName);
 
-        [ItemNotNull]
         public string[] ReadAllLines(Encoding? encoding = null)
             => F.ReadAllLines(this.FullName, encoding ?? Encoding.GetValueFor(this));
 
         public string ReadAllText(Encoding? encoding = null)
             => F.ReadAllText(this.FullName, encoding ?? Encoding.GetValueFor(this));
 
-        [ItemNotNull]
         public IEnumerable<string> ReadLines(Encoding? encoding = null)
             => F.ReadLines(this.FullName, encoding ?? Encoding.GetValueFor(this));
 
-        [ItemNotNull]
         public Task<byte[]> ReadAllBytesAsync(CancellationToken cancellationToken = default)
         {
             return F.ReadAllBytesAsync(this.FullName, cancellationToken);
         }
 
-        [ItemNotNull]
         public Task<string[]> ReadAllLinesAsync(Encoding? encoding = null, CancellationToken cancellationToken = default)
         {
             return F.ReadAllLinesAsync(this.FullName, encoding ?? Encoding.GetValueFor(this), cancellationToken);
         }
 
-        [ItemNotNull]
         public Task<string> ReadAllTextAsync(Encoding? encoding = null, CancellationToken cancellationToken = default)
         {
             return F.ReadAllTextAsync(this.FullName, encoding ?? Encoding.GetValueFor(this), cancellationToken);

@@ -66,7 +66,6 @@ namespace Mio
             return this.Ancestors.Any(x => x.Equals(directory, c));
         }
 
-        [ItemNotNull]
         public IEnumerable<DirectoryPath> Ancestors
         {
             get
@@ -82,8 +81,10 @@ namespace Mio
             => this.TryGetParent()
                 ?? throw new InvalidOperationException("Root directory does not have parent directory.");
 
-        public DirectoryPath Root
-            => new DirectoryPath(Path.GetPathRoot(this.FullName));
+        public DirectoryPath? Root
+            => Path.GetPathRoot(this.FullName) is { } path
+                ? new DirectoryPath(path)
+                : null;
 
         private protected FileSystemPath(string path, bool normalize)
         {

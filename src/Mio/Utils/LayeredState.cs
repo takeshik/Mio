@@ -13,13 +13,13 @@ namespace Mio.Utils
     {
         private sealed class Layer
         {
-            public Layer Parent { get; }
+            public Layer? Parent { get; }
 
             public TValue Value { get; }
 
             public Func<TConditionArg, bool> Condition { get; }
 
-            public Layer(Layer parent, TValue value, Func<TConditionArg, bool> condition)
+            public Layer(Layer? parent, TValue value, Func<TConditionArg, bool> condition)
             {
                 this.Parent = parent;
                 this.Condition = condition;
@@ -30,9 +30,9 @@ namespace Mio.Utils
         private sealed class StateReversion : IDisposable
         {
             private readonly LayeredState<TValue, TConditionArg> _self;
-            private readonly Layer _revertingValue;
+            private readonly Layer? _revertingValue;
 
-            public StateReversion(LayeredState<TValue, TConditionArg> self, Layer revertingValue)
+            public StateReversion(LayeredState<TValue, TConditionArg> self, Layer? revertingValue)
             {
                 this._self = self;
                 this._revertingValue = revertingValue;
@@ -45,19 +45,19 @@ namespace Mio.Utils
             }
         }
 
-        private readonly AsyncLocal<Layer> _value;
+        private readonly AsyncLocal<Layer?> _value;
 
         public TValue FallbackValue { get; set; }
 
         public LayeredState(TValue fallbackValue)
         {
-            this._value = new AsyncLocal<Layer>();
+            this._value = new AsyncLocal<Layer?>();
             this.FallbackValue = fallbackValue;
         }
 
         public TValue GetValueFor(TConditionArg conditionArg)
         {
-            TValue value = default;
+            TValue? value = default;
             for (var current = this._value.Value; current != null && value == null; current = current.Parent)
             {
                 if (current.Value == null || !current.Condition(conditionArg)) continue;
