@@ -5,6 +5,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net5.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
+    <Features>strict;nullablePublicOnly</Features>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\build\Mio.snk</AssemblyOriginatorKeyFile>
 
