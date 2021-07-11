@@ -116,6 +116,13 @@ namespace Mio
             }
         }
 
+        public static FileSystemPath? TryGet(string path)
+        {
+            if (File.Exists(path)) return new FilePath(path);
+            if (Directory.Exists(path)) return new DirectoryPath(path);
+            return null;
+        }
+
         public DirectoryPath? TryGetParent()
         {
             var path = Path.GetDirectoryName(this.FullName);
