@@ -76,8 +76,19 @@ namespace Mio.Destructive
             }
         }
 
-        public void MoveTo(DestructiveFilePath destination)
-            => F.Move(this.FullName, destination.FullName);
+        public void MoveTo(DestructiveFilePath destination, bool overwrite = true)
+        {
+#if NET5_0_OR_GREATER
+            F.Move(this.FullName, destination.FullName, overwrite);
+#else
+            if (overwrite && F.Exists(this.FullName))
+            {
+                F.Delete(this.FullName);
+            }
+
+            F.Move(this.FullName, destination.FullName);
+#endif
+        }
 
         public void Append(byte[] bytes)
         {

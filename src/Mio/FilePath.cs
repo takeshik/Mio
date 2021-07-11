@@ -128,8 +128,8 @@ namespace Mio
             FileOptions options = FileOptions.Asynchronous)
             => new(new FileStream(this.FullName, FileMode.Open, FileAccess.Read, share, bufferSize, options), encoding ?? Encoding.GetValueFor(this));
 
-        public void CopyTo(DestructiveFilePath destination)
-            => F.Copy(this.FullName, destination.FullName, true);
+        public void CopyTo(DestructiveFilePath destination, bool overwrite = true)
+            => F.Copy(this.FullName, destination.FullName, overwrite);
 
         public void Replace(DestructiveFilePath destination, DestructiveFilePath destinationBackup)
             => F.Replace(this.FullName, destination.FullName, destinationBackup.FullName);
