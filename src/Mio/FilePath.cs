@@ -64,13 +64,13 @@ namespace Mio
             => F.Exists(this.FullName);
 
         public override DateTimeOffset GetCreationTime()
-            => new DateTimeOffset(F.GetCreationTime(this.FullName));
+            => new(F.GetCreationTime(this.FullName));
 
         public override DateTimeOffset GetLastAccessTime()
-            => new DateTimeOffset(F.GetLastAccessTime(this.FullName));
+            => new(F.GetLastAccessTime(this.FullName));
 
         public override DateTimeOffset GetLastWriteTime()
-            => new DateTimeOffset(F.GetLastWriteTime(this.FullName));
+            => new(F.GetLastWriteTime(this.FullName));
 
         [MustUseReturnValue]
         public FilePath? NullIfNotExists()
@@ -78,7 +78,7 @@ namespace Mio
 
         [Pure]
         public FilePath WithExtension(string? extension)
-            => new FilePath(Path.ChangeExtension(this.FullName, extension), false);
+            => new(Path.ChangeExtension(this.FullName, extension), false);
 
         [MustUseReturnValue]
         public long GetSize64()
@@ -119,14 +119,14 @@ namespace Mio
             FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
-            => new FileStream(this.FullName, FileMode.Open, FileAccess.Read, share, bufferSize, options);
+            => new(this.FullName, FileMode.Open, FileAccess.Read, share, bufferSize, options);
 
         public StreamReader OpenReadText(
             Encoding? encoding = null,
             FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
-            => new StreamReader(new FileStream(this.FullName, FileMode.Open, FileAccess.Read, share, bufferSize, options), encoding ?? Encoding.GetValueFor(this));
+            => new(new FileStream(this.FullName, FileMode.Open, FileAccess.Read, share, bufferSize, options), encoding ?? Encoding.GetValueFor(this));
 
         public void CopyTo(DestructiveFilePath destination)
             => F.Copy(this.FullName, destination.FullName, true);
@@ -136,6 +136,6 @@ namespace Mio
 
         [Pure]
         internal DestructiveFilePath CreateDestructive()
-            => new DestructiveFilePath(this.FullName, false);
+            => new(this.FullName, false);
     }
 }

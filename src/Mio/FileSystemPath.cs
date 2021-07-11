@@ -26,10 +26,10 @@ namespace Mio
 
         public static LayeredState<FileSystemPathComparer, (FileSystemPath?, FileSystemPath?)> Comparer { get; }
             // Some filesystems are case-sensitive, but others are not. Therefore the default is loosen the condition of equality.
-            = new LayeredState<FileSystemPathComparer, (FileSystemPath?, FileSystemPath?)>(FileSystemPathComparer.CaseInsensitive);
+            = new(FileSystemPathComparer.CaseInsensitive);
 
         public static LayeredState<Encoding, FileSystemPath> Encoding { get; }
-            = new LayeredState<Encoding, FileSystemPath>(new UTF8Encoding(false, true));
+            = new(new UTF8Encoding(false, true));
 
         [DataMember]
         protected internal string FullName { get; }
@@ -100,7 +100,7 @@ namespace Mio
                     // Before trimming, path must be like "///". Keep the last directory separator.
                     normalizedPath = Path.DirectorySeparatorChar.ToString();
                 }
-                else if (normalizedPath != path && normalizedPath[normalizedPath.Length - 1] == Path.VolumeSeparatorChar)
+                else if (normalizedPath != path && normalizedPath[^1] == Path.VolumeSeparatorChar)
                 {
                     // If Path.VolumeSeparatorChar == Path.DirectorySeparatorChar, this clause must be meaningless.
                     // Before trimming, path must be like "C:/". "C:" does not mean "C:/" but "C:/.", so keep the last

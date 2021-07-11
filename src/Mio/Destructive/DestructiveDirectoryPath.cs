@@ -35,7 +35,7 @@ namespace Mio.Destructive
 
         [Pure]
         public Uri ToUri()
-            => new Uri(this.FullName);
+            => new(this.FullName);
 
         public new DestructiveDirectoryPath EnsureCreated()
         {
@@ -74,7 +74,7 @@ namespace Mio.Destructive
 
         public bool DeleteEntries()
         {
-            void DeleteCore(string path)
+            static void DeleteCore(string path)
             {
                 foreach (var file in D.EnumerateFiles(path))
                 {

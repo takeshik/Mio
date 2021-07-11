@@ -31,7 +31,7 @@ namespace Mio.Destructive
         }
 
         public static DestructiveFilePath CreateTempFile()
-            => new DestructiveFilePath(Path.GetTempFileName());
+            => new(Path.GetTempFileName());
 
         [Pure]
         public override string ToString()
@@ -39,7 +39,7 @@ namespace Mio.Destructive
 
         [Pure]
         public Uri ToUri()
-            => new Uri(this.FullName);
+            => new(this.FullName);
 
         public new DestructiveFilePath? NullIfNotExists()
             => this.Exists() ? this : null;
@@ -81,11 +81,9 @@ namespace Mio.Destructive
 
         public void Append(byte[] bytes)
         {
-            using (var fs = this.Open(FileMode.Append, FileAccess.Write))
-            {
-                fs.Write(bytes, 0, bytes.Length);
-                fs.Flush();
-            }
+            using var fs = this.Open(FileMode.Append, FileAccess.Write);
+            fs.Write(bytes, 0, bytes.Length);
+            fs.Flush();
         }
 
         public void Append(IEnumerable<string> contents, Encoding? encoding = null)
@@ -116,11 +114,9 @@ namespace Mio.Destructive
 
             async Task Core()
             {
-                using (var fs = this.Open(FileMode.Append, FileAccess.Write))
-                {
-                    await fs.WriteAsync(bytes, 0, bytes.Length, cancellationToken);
-                    await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
-                }
+                using var fs = this.Open(FileMode.Append, FileAccess.Write);
+                await fs.WriteAsync(bytes, 0, bytes.Length, cancellationToken);
+                await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
             }
 
             return Core();
@@ -164,14 +160,14 @@ namespace Mio.Destructive
             FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
-            => new FileStream(this.FullName, FileMode.Create, FileAccess.ReadWrite, share, bufferSize, options);
+            => new(this.FullName, FileMode.Create, FileAccess.ReadWrite, share, bufferSize, options);
 
         public StreamWriter CreateText(
             Encoding? encoding = null,
             FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
-            => new StreamWriter(new FileStream(this.FullName, FileMode.Create, FileAccess.ReadWrite, share, bufferSize, options), encoding ?? Encoding.GetValueFor(this));
+            => new(new FileStream(this.FullName, FileMode.Create, FileAccess.ReadWrite, share, bufferSize, options), encoding ?? Encoding.GetValueFor(this));
 
         public FileStream Open(
             FileMode mode = FileMode.OpenOrCreate,
@@ -179,19 +175,19 @@ namespace Mio.Destructive
             FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
-            => new FileStream(this.FullName, mode, access, share, bufferSize, options);
+            => new(this.FullName, mode, access, share, bufferSize, options);
 
         public FileStream OpenWrite(
             FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
-            => new FileStream(this.FullName, FileMode.OpenOrCreate, FileAccess.Write, share, bufferSize, options);
+            => new(this.FullName, FileMode.OpenOrCreate, FileAccess.Write, share, bufferSize, options);
 
         public StreamWriter OpenWriteText(
             Encoding? encoding = null,
             FileShare share = FileShare.Read,
             int bufferSize = DefaultFileStreamBufferSize,
             FileOptions options = FileOptions.Asynchronous)
-            => new StreamWriter(new FileStream(this.FullName, FileMode.OpenOrCreate, FileAccess.Write, share, bufferSize, options), encoding ?? Encoding.GetValueFor(this));
+            => new(new FileStream(this.FullName, FileMode.OpenOrCreate, FileAccess.Write, share, bufferSize, options), encoding ?? Encoding.GetValueFor(this));
     }
 }

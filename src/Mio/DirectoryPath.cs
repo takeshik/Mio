@@ -40,11 +40,11 @@ namespace Mio
 
         [MustUseReturnValue]
         public static DirectoryPath GetTempDirectory()
-            => new DirectoryPath(Path.GetTempPath());
+            => new(Path.GetTempPath());
 
         [MustUseReturnValue]
         public static DirectoryPath GetCurrentDirectory()
-            => new DirectoryPath(D.GetCurrentDirectory());
+            => new(D.GetCurrentDirectory());
 
         [MustUseReturnValue]
         public static IReadOnlyList<DirectoryPath> GetRootDirectories()
@@ -78,13 +78,13 @@ namespace Mio
             => D.Exists(this.FullName);
 
         public override DateTimeOffset GetCreationTime()
-            => new DateTimeOffset(D.GetCreationTime(this.FullName));
+            => new(D.GetCreationTime(this.FullName));
 
         public override DateTimeOffset GetLastAccessTime()
-            => new DateTimeOffset(D.GetLastAccessTime(this.FullName));
+            => new(D.GetLastAccessTime(this.FullName));
 
         public override DateTimeOffset GetLastWriteTime()
-            => new DateTimeOffset(D.GetLastWriteTime(this.FullName));
+            => new(D.GetLastWriteTime(this.FullName));
 
         [MustUseReturnValue]
         public DirectoryPath? NullIfNotExists()
@@ -92,15 +92,15 @@ namespace Mio
 
         [Pure]
         public DirectoryPath WithExtension(string? extension)
-            => new DirectoryPath(Path.ChangeExtension(this.FullName, extension), false);
+            => new(Path.ChangeExtension(this.FullName, extension), false);
 
         [Pure]
         public FilePath ChildFile(string path)
-            => new FilePath(Path.Combine(this.FullName, path));
+            => new(Path.Combine(this.FullName, path));
 
         [Pure]
         public DirectoryPath ChildDirectory(string path)
-            => new DirectoryPath(Path.Combine(this.FullName, path));
+            => new(Path.Combine(this.FullName, path));
 
         public FilePath RandomNamedChildFile(string prefix = "", string suffix = "")
             => this.ChildFile(prefix + Path.GetRandomFileName() + suffix);
@@ -142,18 +142,18 @@ namespace Mio
         {
             static FileSystemPath CreatePath(ref FileSystemEntry entry)
                 => entry.IsDirectory
-                    ? (FileSystemPath) new DirectoryPath(entry.ToFullPath())
+                    ? new DirectoryPath(entry.ToFullPath())
                     : new FilePath(entry.ToFullPath());
 
             return new FileSystemEnumerable<FileSystemPath>(this.FullName, CreatePath, enumerationOptions)
             {
                 ShouldIncludePredicate = shouldIncludePredicate == null
-                    ? (FileSystemEnumerable<FileSystemPath>.FindPredicate)((ref FileSystemEntry x) => true)
+                    ? (FileSystemEnumerable<FileSystemPath>.FindPredicate)((ref FileSystemEntry _) => true)
 #pragma warning disable CS8602
                     : (ref FileSystemEntry x) => shouldIncludePredicate(CreatePath(ref x)),
 #pragma warning restore CS8602
                 ShouldRecursePredicate = shouldRecursePredicate == null
-                    ? (FileSystemEnumerable<FileSystemPath>.FindPredicate)((ref FileSystemEntry x) => true)
+                    ? (FileSystemEnumerable<FileSystemPath>.FindPredicate)((ref FileSystemEntry _) => true)
 #pragma warning disable CS8602
                     : (ref FileSystemEntry x) => shouldRecursePredicate(CreatePath(ref x))
 #pragma warning restore CS8602
@@ -168,7 +168,7 @@ namespace Mio
             return new FileSystemEnumerable<FileSystemPath>(
                 this.FullName,
                 (ref FileSystemEntry x) => x.IsDirectory
-                    ? (FileSystemPath) new DirectoryPath(x.ToFullPath())
+                    ? new DirectoryPath(x.ToFullPath())
                     : new FilePath(x.ToFullPath()),
                 new EnumerationOptions()
                 {
@@ -181,7 +181,7 @@ namespace Mio
             )
             {
                 ShouldRecursePredicate = recursionPredicate == null
-                    ? (FileSystemEnumerable<FileSystemPath>.FindPredicate)((ref FileSystemEntry x) => true)
+                    ? (FileSystemEnumerable<FileSystemPath>.FindPredicate)((ref FileSystemEntry _) => true)
 #pragma warning disable CS8602
                     : (ref FileSystemEntry x) => recursionPredicate(new DirectoryPath(x.ToFullPath())),
 #pragma warning restore CS8602
@@ -209,6 +209,6 @@ namespace Mio
 
         [Pure]
         internal DestructiveDirectoryPath CreateDestructive()
-            => new DestructiveDirectoryPath(this.FullName, false);
+            => new(this.FullName, false);
     }
 }
