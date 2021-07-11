@@ -90,6 +90,20 @@ namespace Mio.Destructive
 #endif
         }
 
+        public bool TryMoveTo(DestructiveFilePath destination)
+        {
+            if (destination.Exists()) return false;
+            try
+            {
+                this.MoveTo(destination);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public void Append(byte[] bytes)
         {
             using var fs = this.Open(FileMode.Append, FileAccess.Write);

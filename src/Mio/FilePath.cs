@@ -131,6 +131,20 @@ namespace Mio
         public void CopyTo(DestructiveFilePath destination, bool overwrite = true)
             => F.Copy(this.FullName, destination.FullName, overwrite);
 
+        public bool TryCopyTo(DestructiveFilePath destination)
+        {
+            if (destination.Exists()) return false;
+            try
+            {
+                this.CopyTo(destination);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public void Replace(DestructiveFilePath destination, DestructiveFilePath destinationBackup)
             => F.Replace(this.FullName, destination.FullName, destinationBackup.FullName);
 
