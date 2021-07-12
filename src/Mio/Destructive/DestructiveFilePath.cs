@@ -81,9 +81,9 @@ namespace Mio.Destructive
 #if NET5_0_OR_GREATER
             F.Move(this.FullName, destination.FullName, overwrite);
 #else
-            if (overwrite && F.Exists(this.FullName))
+            if (overwrite)
             {
-                F.Delete(this.FullName);
+                F.Delete(destination.FullName);
             }
 
             F.Move(this.FullName, destination.FullName);
